@@ -1,0 +1,108 @@
+/*
+body {
+    --bg-color: #000;
+    --color: #fff;
+    --anchor-color: #88f;
+    --anchor-color-visited: #bbf;
+    background-color: var(--bg-color);
+    color: var(--color);
+    max-width: 90rem;
+    height: max-content;
+    margin: 0 auto;
+    padding: 0 1rem;
+    line-height: 1.75;
+}
+body.light {
+    --bg-color: #fff;
+    --color: #000;
+    --anchor-color: #00f;
+    --anchor-color-visited: #1a0dab;
+}
+a { 
+    color: var(--anchor-color) !important;
+}
+a:visited {
+    color: var(--anchor-color-visited) !important;
+}
+
+.infobox,
+.wikitable,
+.wikitable > * > tr > th,
+table.ambox,
+figure[typeof~='mw:Image/Thumb'],
+figure[typeof~='mw:Video/Thumb'],
+figure[typeof~='mw:Audio/Thumb'],
+figure[typeof~='mw:Image/Frame'],
+figure[typeof~='mw:Video/Frame'],
+figure[typeof~='mw:Audio/Frame'],
+figure[typeof~='mw:Image/Thumb'] > figcaption,
+figure[typeof~='mw:Video/Thumb'] > figcaption,
+figure[typeof~='mw:Audio/Thumb'] > figcaption,
+figure[typeof~='mw:Image/Frame'] > figcaption,
+figure[typeof~='mw:Video/Frame'] > figcaption,
+figure[typeof~='mw:Audio/Frame'] > figcaption,
+.navbox, .navbox-subgroup,
+.navbox-even,
+.toc,
+table.ombox,
+h1, h2, h3, h4, h5, h6,
+.toccolours,
+pre, code, .mw-code,
+.mw-highlight,
+div.thumbinner
+{
+    color: inherit !important;
+    background-color: inherit!important;
+}
+
+.infobox-header,
+.mw-parser-output .sidebar,
+.sidebar th,
+.sidebar td,
+.sidebar-list-title,
+.navbox-group,
+.navbox-abovebelow,
+.navbox-title,
+th,
+.mw-parser-output .module-shortcutboxplain,
+td,
+.mw-parser-output .documentation, .mw-parser-output .documentation-metadata,
+.mw-parser-output #mp-topbanner, .mw-parser-output .mp-h2, .mw-parser-output #mp-left,
+.mw-parser-output #mp-topbanner,
+.mw-parser-output #mp-lower
+{
+    color: inherit !important;
+    background-color: inherit !important;
+}
+*/
+/*
+body {
+    --filter: invert(1);
+    background-color: #fff;
+    color: #000;
+    filter: var(--filter);
+    margin: 0;
+}
+img {
+    filter: var(--filter);
+}
+body.light {
+    --filter: none;
+}
+*/
+body {
+    --filter: invert(1);
+    line-height: 1.75;
+    font-family: sans-serif;
+    /* to allow resizing */
+    height: max-content;
+    /* for mobile version */
+    overflow: auto;
+}
+body.light {
+    --filter: none;
+}
+img, video {
+    background-color: #fff;
+    filter: var(--filter);
+}

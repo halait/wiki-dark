@@ -1,0 +1,14 @@
+
+#SearchResults {
+    list-style: none;
+    padding: 0;
+}
+.search-result {
+    padding: 1rem 0;
+}
+.search-result-link {
+    font-size: 1.25rem;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+}

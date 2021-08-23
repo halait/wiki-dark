@@ -1,0 +1,12 @@
+<h1>Search Results</h1>
+<form [formGroup]='searchForm' (ngSubmit)='onSubmit()'>
+    <label for='searchInput'>Search: </label>
+    <input formControlName='query' id='searchInput' type='text' required>
+    <input type='submit' value='Search'>
+</form>
+<ol *ngIf="results.length" id='SearchResults'>
+    <li *ngFor='let result of results' class='search-result'>
+        <a routerLink='/wiki/{{ result.key }}' class='search-result-link'>{{ result.title }}</a>
+        <div class='search-result-description'>{{ result.description }}</div>
+    </li>
+</ol>

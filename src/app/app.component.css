@@ -1,0 +1,26 @@
+#SiteHeader {
+    padding: 0.5rem 1rem;
+    height: var(2rem);
+    line-height: var(2rem);
+}
+#headerLogo {
+    display: inline-block;
+    font-size: 1.5rem;
+    color: inherit;
+    font-weight: 700;
+}
+#SiteHeaderMenu {
+    float: right;
+    display: flex;
+}
+#SiteThemeToggle {
+    margin-left: 1rem;
+}
+#siteMain {
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+#wikiIFrame {
+    border: none;
+}
