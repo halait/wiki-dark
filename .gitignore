@@ -44,4 +44,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-/.firebase
+# my ignores
+.firebaserc
+firebase-debug.log
+.firebase
