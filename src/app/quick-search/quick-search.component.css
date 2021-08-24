@@ -1,0 +1,26 @@
+#SearchForm {
+    display: inline-flex;
+    width: 100%;
+    border: 1px solid var(--color);
+    padding: 2px 4px;
+    box-sizing: border-box;
+}
+#SearchInput {
+    min-width: 0;
+    width: 0;
+    flex-basis: 0;
+    flex-grow: 1;
+    padding: 0;
+    border: none;
+}
+#SubmitSVG {
+    height: 100%;
+    width: auto;
+    fill: currentColor;
+    display: block;
+    margin: auto;
+}
+#SubmitButton {
+    border: none;
+    padding: 0 2px;
+}

@@ -1,3 +1,10 @@
+#Wiki Dark
+##Overview
+Wiki Dark is made with <a href='https://www.mediawiki.org/wiki/RESTBase'>Wikimedia REST API</a>, 
+<a href='https://www.mediawiki.org/wiki/API:REST_API'>Mediawiki Core REST API</a> and 
+<a href='/wiki/Angular_%28web_framework%29'>Angular</a>. Visit the <a href='https://github.com/halait/wiki-dark'>
+GitHub repository</a> to learn more.
+<!--
 # WikiDark
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.1.
@@ -25,3 +32,4 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+-->

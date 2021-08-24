@@ -1,4 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DataService } from '../data.service';
@@ -20,7 +21,8 @@ export class WikiComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dataService: DataService,
-    private ngZone: NgZone) { }
+    private ngZone: NgZone,
+    private titleService: Title) { }
 
   ngOnInit(): void {
     const mediaQueryList = window.matchMedia('(max-width: 60rem)');
@@ -69,7 +71,7 @@ export class WikiComponent implements OnInit {
     if(!doc) throw 'No doc';
     if(!this.title) throw 'No title';
     console.log('setting wiki');
-    this.iFrame!.style.display = 'none';
+    window.scrollTo(0, 0);
     let page;
     try {
       page = await this.dataService.getWiki(this.title, this.mobileMode);
@@ -83,10 +85,14 @@ export class WikiComponent implements OnInit {
     try {
       const decodedURL = decodeURIComponent(this.title);
       this.wikiTitle = (decodedURL as any).replaceAll('_', ' ') as string;
+      this.titleService.setTitle(this.wikiTitle + ' - Wiki Dark');
     } catch(e) {
       this.wikiTitle = '';
+      this.titleService.setTitle('WikiDark');
       console.error('Unable to decode URL');
     }
+
+    
 
     try {
       this.changeToInternalLinks();
@@ -125,8 +131,6 @@ export class WikiComponent implements OnInit {
     });
     resizeObserver.observe(doc.body);
 
-    this.iFrame!.style.display = 'block';
-
     //this.resizeIFrame();
 
     /*
@@ -156,15 +160,9 @@ export class WikiComponent implements OnInit {
       const a = anchors[i];
       let internal = false;
       if(baseOrigin === a.origin && a.pathname.substr(1, 4) === 'wiki') {
-        // check if file resource and redirect
+        // check if file resource, don't redirect
         // TODO change to overlay
-        if(a.pathname.substr(1, 10) === 'wiki/File:') {
-          const resource = a.querySelector('*[resource]');
-          if(resource) {
-            const resourceUrl = resource.getAttribute('src');
-            a.href = resourceUrl ? resourceUrl : a.href;
-          }
-        } else {
+        if(a.pathname.substr(1, 10) !== 'wiki/File:') {
           internal = true;
           a.href = this.getBaseUrl() + a.pathname;
         }

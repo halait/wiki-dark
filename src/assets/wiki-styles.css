@@ -96,8 +96,11 @@ body {
     font-family: sans-serif;
     /* to allow resizing */
     height: max-content;
-    /* for mobile version */
+
+    /* mobile version ovverides */
     overflow: auto;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 body.light {
     --filter: none;

@@ -1,26 +1,54 @@
 #SiteHeader {
-    padding: 0.5rem 1rem;
-    height: var(2rem);
-    line-height: var(2rem);
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    /*
+    --site-header-height: 2rem;
+    height: var(--site-header-height);
+    line-height: var(--site-header-height);
+    */
 }
-#headerLogo {
-    display: inline-block;
-    font-size: 1.5rem;
-    color: inherit;
+#HeaderLogo {
+    font-size: 1.4rem;
     font-weight: 700;
+    color: inherit;
+    flex-shrink: 0;
 }
 #SiteHeaderMenu {
-    float: right;
     display: flex;
+    flex-basis: 16rem;
+    margin-left: 0.5rem;
 }
 #SiteThemeToggle {
-    margin-left: 1rem;
+    margin-left: 0.5rem;
 }
-#siteMain {
+#SiteMain {
     max-width: 90rem;
     margin: 0 auto;
     padding: 0 1rem;
 }
 #wikiIFrame {
     border: none;
+}
+app-quick-search {
+    flex-grow: 1;
+}
+#SiteFooter {
+    padding: 2rem;
+    max-width: 90rem;
+    margin: 0 auto;
+}
+@media screen and (min-width: 60rem) {
+    #SiteHeader {
+        padding: 0.8rem 1.5rem;
+    }
+    #HeaderLogo {
+        font-size: 2rem;
+    }
+    #SiteMain {
+        padding: 0 2rem;
+    }
+
 }

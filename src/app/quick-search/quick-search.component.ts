@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-quick-search',
@@ -13,15 +14,22 @@ export class QuickSearchComponent implements OnInit {
   });
   constructor(
     private router: Router,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private dataService: DataService) { }
 
   ngOnInit(): void {
   }
 
-  onSubmit() {
+  async onSubmit() {
     const query = this.searchForm.value.query.trim();
-    if(!query) return;
     //TODO prompt validation
-    this.router.navigate(['/search'], {queryParams: {q: query}});
+    if(!query) return;
+    try {
+      await this.dataService.getWiki(query);
+      this.router.navigate(['/wiki/' + query]);
+    } catch(e) {
+      console.log('No wiki page for search, redirecting to regular search');
+      this.router.navigate(['/search'], {queryParams: {q: query}});
+    }
   }
 }

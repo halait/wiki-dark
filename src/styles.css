@@ -34,8 +34,11 @@ input, button {
     background-color: inherit;
     border: 1px var(--color) solid;
 }
+button {
+    cursor: pointer;
+}
 .undecorated-link {
-    color: inherit;
+    color: var(--color);
     text-decoration: none;
 }
 .display-none {

@@ -1,10 +1,26 @@
 <header id='SiteHeader'>
-    <a [routerLink]='["/wiki/Main_Page"]' id='headerLogo' class='undecorated-link'>Wiki Dark</a>
+    <!--
+        TODO mobile menu
+    <button id="HeaderMenuBtn" aria-label="Open menu" (onclick)='openSideMenu()'>
+        <svg id='HeaderMenuSvg' viewBox="0 0 150 100" height="100" width='150' xmlns="http://www.w3.org/2000/svg" stroke="#fff" stroke-width="16" alt="Main menu button">
+            <line x1="0" y1="10" x2="150" y2="10"></line>
+            <line x1="0" y1="50" x2="150" y2="50"></line>
+            <line x1="0" y1="90" x2="150" y2="90"></line>
+        </svg>
+    </button>
+    -->
+    <a [routerLink]='["/wiki/Main_Page"]' id='HeaderLogo' class='undecorated-link'>Wiki Dark</a>
     <div id='SiteHeaderMenu'>
         <app-quick-search></app-quick-search>
         <button id='SiteThemeToggle' #SiteThemeToggle (click)='this.toggleTheme()'></button>
     </div>
 </header>
-<main id='siteMain'>
+<main id='SiteMain'>
     <router-outlet></router-outlet>
 </main>
+<footer id='SiteFooter'>
+    Wiki Dark is made by <a href="https://github.com/halait">halait</a> with 
+    <a href='https://www.mediawiki.org/wiki/RESTBase'>Wikimedia REST API</a>, 
+    <a href='https://www.mediawiki.org/wiki/API:REST_API'>Mediawiki Core REST API</a> and 
+    <a href='/wiki/Angular_%28web_framework%29'>Angular</a>. Visit the <a href='https://github.com/halait/wiki-dark'>GitHub repository</a> to learn more.
+</footer>

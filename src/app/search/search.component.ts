@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -14,6 +14,7 @@ export class SearchComponent implements OnInit {
     query: ['', Validators.required]
   });
   results: any[] = [];
+  message?: string;
   constructor(
     private formBuilder: FormBuilder,
     private dataService : DataService,
@@ -31,16 +32,9 @@ export class SearchComponent implements OnInit {
     if(!query) {
       return;
     }
-    const results = await this.dataService.getSearchResults(query);
-    if(typeof results === 'string') {
-      this.router.navigate(['/wiki/' + query]);
-      return;
+    this.results = await this.dataService.getSearchResults(query);
+    if(!this.results.length) {
+      this.message = 'Your search - ' + query + ' - did not match... anything...';
     }
-    this.results = results;
-    console.log(this.results);
-  }
-
-  onSubmit() {
-    //this.router.navigate(['/wiki/' + this.searchForm.value.query]);
   }
 }

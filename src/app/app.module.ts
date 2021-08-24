@@ -7,13 +7,15 @@ import { SearchComponent } from './search/search.component';
 import { AppRoutingModule } from './app-routing.module';
 import { WikiComponent } from './wiki/wiki.component';
 import { QuickSearchComponent } from './quick-search/quick-search.component';
+import { SearchResultsComponent } from './search-results/search-results.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
     WikiComponent,
-    QuickSearchComponent
+    QuickSearchComponent,
+    SearchResultsComponent
   ],
   imports: [
     BrowserModule,

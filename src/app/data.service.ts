@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class DataService {
 
   public theme = new BehaviorSubject<string>(localStorage.getItem('theme') || 'dark');
+  private wikiCache = new Map();
 
   constructor() {
     this.setTheme(this.theme.getValue());
@@ -18,13 +19,15 @@ export class DataService {
     this.theme.next(theme);
   }
 
-  async getSearchResults(query: string): Promise<any[] | string> {
+  async getSearchResults(query: string): Promise<any[]> {
+    /*
     try {
       const text = await this.getWiki(query);
       return text;
     } catch(e) {
       console.error('getWiki threw');
     }
+    */
     const response = await fetch(
       `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${query}&limit=10`,
       {
@@ -35,7 +38,8 @@ export class DataService {
     return data.pages as any[];
   }
   
-  async getWiki(title: String, mobileMode?: boolean): Promise<any> {
+  async getWiki(title: string, mobileMode?: boolean): Promise<any> {
+    console.log('getting wiki');
     /*
     const response = await fetch(
       `https://en.wikipedia.org/w/rest.php/v1/page/${title}/with_html`,
@@ -54,6 +58,19 @@ export class DataService {
     );
     return (await response.json()).parse.text;
     */
+
+    if(this.wikiCache.size > 100) {
+      this.wikiCache.clear();
+    }
+
+    const cached = this.wikiCache.get(this.getCacheKey(title, mobileMode));
+
+    if(cached) {
+      console.warn('cache hit');
+      return cached;
+    }
+
+
     let endPointPrefix = 'https://en.wikipedia.org/api/rest_v1/page/html/';
     if(mobileMode) {
       endPointPrefix = 'https://en.wikipedia.org/api/rest_v1/page/mobile-html/'
@@ -66,9 +83,21 @@ export class DataService {
     );
 
     if(!response.ok) {
-      throw 'Unable to get wiki'
+      throw 'Unable to get wiki';
     }
 
-    return await response.text();
+    const text = await response.text()
+
+    this.wikiCache.set(this.getCacheKey(title, mobileMode), text);
+
+    return text;
+  }
+
+  getCacheKey(title: string, mobileMode?: boolean) {
+    // for caching consisteny
+    if(!mobileMode) {
+      mobileMode = false;
+    }
+    return title + mobileMode;
   }
 }
