@@ -16,6 +16,7 @@ export class WikiComponent implements OnInit {
   theme?: string;
   mobileMode = true;
   iFrameHeight = 0;
+  origin =  window.location.origin;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +26,9 @@ export class WikiComponent implements OnInit {
     private titleService: Title) { }
 
   ngOnInit(): void {
+
+    // move to service for caching reasons
+
     const mediaQueryList = window.matchMedia('(max-width: 60rem)');
     this.mobileMode = mediaQueryList.matches;
     console.log('mobile mode: ' + this.mobileMode);
@@ -67,6 +71,11 @@ export class WikiComponent implements OnInit {
   }
 
   async setWiki() {
+
+    // TODO destroy and create iFrame everytime, javascript files stay loaded, memory leak (pcs from mobile version persists + other stuff probably)
+
+
+
     const doc = this.iFrame!.contentDocument as Document;
     if(!doc) throw 'No doc';
     if(!this.title) throw 'No title';
@@ -79,7 +88,9 @@ export class WikiComponent implements OnInit {
       this.wikiTitle = 'Error: Unable to fetch page.';
       return;
     }
-    
+
+
+    // TODO display error if needed
     await this.writeWiki(doc, page);
 
     try {
@@ -92,25 +103,19 @@ export class WikiComponent implements OnInit {
       console.error('Unable to decode URL');
     }
 
-    
-
-    try {
-      this.changeToInternalLinks();
-    } catch(e) {
-      console.error(e);
-    }
-
     const css = doc.createElement('link');
-    css.href = this.getBaseUrl() + '/assets/wiki-styles.css';
+    css.href = this.origin + '/assets/wiki-styles.css';
     css.rel = 'stylesheet';
     css.type = 'text/css';
     doc.head.appendChild(css);
 
+    /*
     // dynamic resizing
     // doing it this way cause Chrome does not fire load event when using innerHTML method
     let script = doc.createElement('script');
-    script.src = this.getBaseUrl() + '/assets/wiki-script.js';
+    script.src = this.origin + '/assets/wiki-script.js';
     doc.head.appendChild(script);
+    */
 
     console.log(this.theme + ' theme setting wiki');
     this.setTheme(this.theme);
@@ -130,20 +135,100 @@ export class WikiComponent implements OnInit {
       this.resizeIFrame(newHeight);
     });
     resizeObserver.observe(doc.body);
+    
 
-    //this.resizeIFrame();
 
-    /*
-    this.iFrame!.contentWindow!.addEventListener('resize', () => {
-      console.warn('resize iFrame event');
-      this.resizeIFrame();
-    });
-    */
+    //setTimeout(() => {
+      const toc = this.getTableOfContents(doc);
+      for(let i = 0, len = toc.length; i != len; ++i) {
+        if(toc[i].level != 1) continue;
+        const section = doc.querySelector(`section[data-mw-section-id="${toc[i].id}"]`) as HTMLElement;
+        if(!section) continue;
+        const heading = doc.getElementById(toc[i].anchor) as HTMLHeadingElement;
+        console.log(toc[i].anchor);
+        if(!heading) continue;
+        if(heading.parentElement != section) {
+          if(
+            !heading.parentElement ||
+            heading.parentElement.parentElement != section ||
+            heading.parentElement.getAttribute('onclick')) {
+              continue;
+          }
+          heading.parentElement.remove();
+        } else {
+          heading.remove();
+        }
+        const div = doc.createElement('div');
+
+
+        while(section.hasChildNodes()) {
+          div.appendChild(section.firstChild!);
+        }
+        //div.innerHTML = section.innerHTML;
+        section.innerHTML = '';
+        div.id = 'wd-' + toc[i].id;
+        div.style.display = 'none';
+        section.appendChild(heading);
+        section.appendChild(div);
+        heading.classList.add('wd-control-heading');
+        heading.classList.add('wd-control-heading-hidden');
+        heading.dataset.divId = div.id;
+        heading.addEventListener('click', function(e) {
+          const heading = e.currentTarget as HTMLHeadingElement;
+          const hide = heading.classList.toggle('wd-control-heading-hidden');
+          const div = heading.parentElement!.querySelector('#' + heading.dataset.divId!) as HTMLElement;
+          if(hide) {
+            div.style.display = 'none';
+          } else {
+            div.style.display = 'block';
+          }
+        });
+      }
+    //}, 1000);
+
+
+
+    try {
+      this.changeToInternalLinks();
+    } catch(e) {
+      console.error(e);
+    }
+
   }
 
-  getBaseUrl() {
-    return window.location.origin;
+  // from pcs
+  getTableOfContents(doc: any) {
+    let e: any = doc.querySelectorAll("section") as any;
+    let t: any = [];
+    let  n = new Array(10).fill(0);
+    let r = 0;
+    return [].forEach.call(e, (function(e) {
+        var a = parseInt((e as any).getAttribute("data-mw-section-id"), 10);
+        if (!(!a || isNaN(a) || a < 1)) {
+            var i = (e as any).querySelector("h1,h2,h3,h4,h5,h6");
+            if (i) {
+                var o = parseInt(i.tagName.charAt(1), 10) - 1;
+                o < r && n.fill(0, o),
+                r = o,
+                n[o - 1]++,
+                t.push({
+                    level: o,
+                    id: a,
+                    number: n.slice(0, o).map((function(e) {
+                        return e.toString()
+                    }
+                    )).join("."),
+                    anchor: i.getAttribute("id"),
+                    title: i.innerHTML.trim()
+                })
+            }
+        }
+    }
+    )),
+    t
   }
+
+
 
   // memory leak?
   changeToInternalLinks() {
@@ -164,17 +249,22 @@ export class WikiComponent implements OnInit {
         // TODO change to overlay
         if(a.pathname.substr(1, 10) !== 'wiki/File:') {
           internal = true;
-          a.href = this.getBaseUrl() + a.pathname;
+          a.href = this.origin + a.pathname;
         }
       }
       a.addEventListener('click', (e) => {
-        e.preventDefault();
-        if(internal) {
-          this.ngZone.run(() => {this.router.navigate([a.pathname]);});
-        } else {
-          window.location.href = a.href;
-        }
+        this.navigateToLink(e);
       });
+    }
+  }
+
+  navigateToLink(e: MouseEvent) {
+    e.preventDefault();
+    const elem = e.currentTarget as HTMLAnchorElement;
+    if(elem.origin === window.location.origin) {
+      this.ngZone.run(() => {this.router.navigate([elem.pathname]);});
+    } else {
+      window.location.href = elem.href;
     }
   }
 

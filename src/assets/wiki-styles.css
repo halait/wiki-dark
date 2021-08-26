@@ -109,3 +109,16 @@ img, video {
     background-color: #fff;
     filter: var(--filter);
 }
+.wd-control-heading {
+    cursor: pointer;
+}
+.wd-control-heading:before {
+    display: inline-block;
+    width: 2rem;
+    font-weight: 700;
+    content: '-';
+}
+
+.wd-control-heading-hidden:before {
+    content: '+';
+}
