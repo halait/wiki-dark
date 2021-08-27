@@ -240,14 +240,18 @@ export class WikiComponent implements OnInit {
       const a = anchors[i];
       let internal = false;
       if(baseOrigin === a.origin && a.pathname.substr(1, 4) === 'wiki') {
-        // TODO encode urls (opening urls with parenthesis fails in new tabs)
-
-
         // check if file resource, don't redirect
         // TODO change to overlay
         if(a.pathname.substr(1, 10) !== 'wiki/File:') {
           internal = true;
-          a.href = this.origin + a.pathname;
+          // router seems to follow stricter urls (rfc 3986), problem if open in new tab etc.
+          let pathname = a.pathname;
+          try {
+            pathname = this.encodeURI(pathname);
+          } catch(e) {
+            console.error(e);
+          }
+          a.href = this.origin + pathname;
         }
       }
       a.addEventListener('click', (e) => {
@@ -259,7 +263,7 @@ export class WikiComponent implements OnInit {
   navigateToLink(e: MouseEvent) {
     e.preventDefault();
     const elem = e.currentTarget as HTMLAnchorElement;
-    if(elem.origin === window.location.origin) {
+    if(elem.origin === this.origin) {
       this.ngZone.run(() => {this.router.navigate([elem.pathname]);});
     } else {
       window.location.href = elem.href;
@@ -339,5 +343,11 @@ export class WikiComponent implements OnInit {
     if(Math.abs(newHeight - this.iFrameHeight) < 32) return;
     this.iFrame!.height = (newHeight + 128).toString();
     this.iFrameHeight = newHeight;
+  }
+
+  encodeURI(str: string) {
+    return str.replace(/[!'()*]/g, function(c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
   }
 }

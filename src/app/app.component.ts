@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 import { DataService } from './data.service';
 
 @Component({
@@ -11,8 +12,11 @@ export class AppComponent {
   theme?: string;
   @ViewChild('SiteThemeToggle') siteThemeToggle?: ElementRef;
 
-  constructor(private dataService: DataService) {
-    
+  constructor(private dataService: DataService, private meta: Meta) {
+    this.meta.addTag({
+      name: 'description',
+      content: 'Wiki Dark serves Wikipedia articles with a light-on-dark color scheme.'
+    });
   }
 
   ngAfterViewInit() {
