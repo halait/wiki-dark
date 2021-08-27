@@ -14,7 +14,7 @@ export class WikiComponent implements OnInit {
   title?: string | null;
   wikiTitle?: string;
   theme?: string;
-  mobileMode = true;
+  mobileMode?: boolean;
   iFrameHeight = 0;
   origin =  window.location.origin;
 
@@ -26,16 +26,12 @@ export class WikiComponent implements OnInit {
     private titleService: Title) { }
 
   ngOnInit(): void {
-
-    // move to service for caching reasons
-
-    const mediaQueryList = window.matchMedia('(max-width: 60rem)');
-    this.mobileMode = mediaQueryList.matches;
-    console.log('mobile mode: ' + this.mobileMode);
-    mediaQueryList.addEventListener('change', (query) => {
-      this.mobileMode = query.matches;
-      console.log('mobile mode changed: ' + this.mobileMode);
-      this.setWiki();
+    this.dataService.mobileMode.subscribe((mobileMode) => {
+      console.log('mobile mode changed: ' + mobileMode);
+      this.mobileMode = mobileMode;
+      if(this.iFrame) {
+        this.setWiki();
+      }
     });
   }
 
@@ -83,7 +79,7 @@ export class WikiComponent implements OnInit {
     window.scrollTo(0, 0);
     let page;
     try {
-      page = await this.dataService.getWiki(this.title, this.mobileMode);
+      page = await this.dataService.getWiki(this.title);
     } catch {
       this.wikiTitle = 'Error: Unable to fetch page.';
       return;
@@ -129,7 +125,7 @@ export class WikiComponent implements OnInit {
     const resizeObserver = new ResizeObserver((entry) => {
       const e = entry[0];
       let newHeight = e.contentRect.height;
-      if(e.borderBoxSize) {
+      if(e.borderBoxSize && e.borderBoxSize.length) {
         newHeight = e.borderBoxSize[0].blockSize;
       }
       this.resizeIFrame(newHeight);
@@ -145,7 +141,6 @@ export class WikiComponent implements OnInit {
         const section = doc.querySelector(`section[data-mw-section-id="${toc[i].id}"]`) as HTMLElement;
         if(!section) continue;
         const heading = doc.getElementById(toc[i].anchor) as HTMLHeadingElement;
-        console.log(toc[i].anchor);
         if(!heading) continue;
         if(heading.parentElement != section) {
           if(
@@ -230,7 +225,7 @@ export class WikiComponent implements OnInit {
 
 
 
-  // memory leak?
+  // TODO memory leak?
   changeToInternalLinks() {
     if(!this.iFrame || !this.iFrame.contentDocument) {
       throw 'No iFrame';
@@ -245,6 +240,9 @@ export class WikiComponent implements OnInit {
       const a = anchors[i];
       let internal = false;
       if(baseOrigin === a.origin && a.pathname.substr(1, 4) === 'wiki') {
+        // TODO encode urls (opening urls with parenthesis fails in new tabs)
+
+
         // check if file resource, don't redirect
         // TODO change to overlay
         if(a.pathname.substr(1, 10) !== 'wiki/File:') {

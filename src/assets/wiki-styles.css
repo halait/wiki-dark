@@ -101,6 +101,10 @@ body {
     overflow: auto;
     margin-left: auto !important;
     margin-right: auto !important;
+
+    max-width: 90rem;
+    padding: 0 1rem;
+
 }
 body.light {
     --filter: none;
@@ -111,9 +115,10 @@ img, video {
 }
 .wd-control-heading {
     cursor: pointer;
+    display: flex;
+    justify-content: left;
 }
 .wd-control-heading:before {
-    display: inline-block;
     width: 2rem;
     font-weight: 700;
     content: '-';

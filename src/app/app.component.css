@@ -24,14 +24,6 @@
 #SiteThemeToggle {
     margin-left: 0.5rem;
 }
-#SiteMain {
-    max-width: 90rem;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-#wikiIFrame {
-    border: none;
-}
 app-quick-search {
     flex-grow: 1;
 }
@@ -46,9 +38,6 @@ app-quick-search {
     }
     #HeaderLogo {
         font-size: 2rem;
-    }
-    #SiteMain {
-        padding: 0 2rem;
     }
     #SiteFooter {
         padding: 3rem 2rem 2rem;
