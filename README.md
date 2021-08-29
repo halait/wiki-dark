@@ -1,9 +1,6 @@
 # Wiki Dark
 ## Overview
-Wiki Dark is made with <a href='https://www.mediawiki.org/wiki/RESTBase'>Wikimedia REST API</a>, 
-<a href='https://www.mediawiki.org/wiki/API:REST_API'>Mediawiki Core REST API</a> and 
-<a href='/wiki/Angular_%28web_framework%29'>Angular</a>. Visit the <a href='https://github.com/halait/wiki-dark'>
-GitHub repository</a> to learn more.
+Single-page application that serves Wikipedia articles using <a href='/wiki/Angular_%28web_framework%29'>Angular</a>, <a href='https://www.mediawiki.org/wiki/RESTBase'>Wikimedia REST API</a>, and <a href='https://www.mediawiki.org/wiki/API:REST_API'>Mediawiki Core REST API</a>. Featuring dark mode, search, and collapsible sections. Users are served mobile optimized pages on smaller screens using a separate REST API endpoint. All links to Wikipedia articles are redirected to show within the application. Visit <a href='https://wiki-dark.web.app/'>https://wiki-dark.web.app/</a> to see it live.
 <!--
 # WikiDark
 
