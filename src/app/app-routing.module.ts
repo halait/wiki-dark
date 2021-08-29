@@ -10,6 +10,7 @@ const routes: Routes = [
     component: WikiComponent,
     resolve: {wiki: WikiResolver}
   },
+  // TODO search resolver
   {path: 'search?:query', component: SearchComponent},
   {path: 'search', component: SearchComponent}
 ];

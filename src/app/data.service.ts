@@ -7,15 +7,18 @@ import { BehaviorSubject } from 'rxjs';
 export class DataService {
 
   public theme = new BehaviorSubject<string>(localStorage.getItem('theme') || 'dark');
-  private mobilModeQueryList = window.matchMedia('(max-width: 60rem)');
-  public mobileMode = new BehaviorSubject<boolean>(this.mobilModeQueryList.matches);
+  private mobileModeQueryList = window.matchMedia('(max-width: 60rem)');
+  public mobileMode = new BehaviorSubject<boolean>(this.mobileModeQueryList.matches);
   private wikiCache = new Map();
 
   constructor() {
     this.setTheme(this.theme.getValue());
-    this.mobilModeQueryList.addEventListener('change', (query) => {
-      this.mobileMode.next(query.matches);
-      console.log('DataService: mobile mode changed to - ' + this.mobileMode);
+    this.mobileModeQueryList.addEventListener('change', (query) => {
+      // why does it fire twice on when going to small?
+      if(this.mobileMode.getValue() != query.matches) {
+        console.log('DataService: mobile mode changed to - ' + query.matches);
+        this.mobileMode.next(query.matches);
+      }
     });
   }
 

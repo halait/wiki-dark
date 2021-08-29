@@ -238,12 +238,10 @@ export class WikiComponent implements OnInit {
     const anchors = this.iFrame.contentDocument.querySelectorAll('a');
     for(let i = 0, len = anchors.length; i != len; ++i) {
       const a = anchors[i];
-      let internal = false;
       if(baseOrigin === a.origin && a.pathname.substr(1, 4) === 'wiki') {
         // check if file resource, don't redirect
         // TODO change to overlay
         if(a.pathname.substr(1, 10) !== 'wiki/File:') {
-          internal = true;
           // router seems to follow stricter urls (rfc 3986), problem if open in new tab etc.
           let pathname = a.pathname;
           try {
@@ -300,29 +298,22 @@ export class WikiComponent implements OnInit {
   }
 
   writeWiki(doc: Document, html: string) {
+
     doc.open();
-    doc.write(html);
-    doc.close();
 
     return new Promise((resolve, reject) => {
-      if(this.isReadyState(doc.readyState)) {
-        resolve(doc.readyState);
-      }
       doc.addEventListener('readystatechange', () => {
-        if(this.isReadyState(doc.readyState)) {
+        console.warn('doc.readyState: ' + doc.readyState);
+        if(doc.readyState != 'loading') {
           resolve(doc.readyState);
-          console.warn(doc.readyState);
         }
       });
-      setTimeout(() => {reject("Took too long")}, 5000);
-    });
-  }
 
-  isReadyState(state: String) {
-    if(state === 'complete') {
-      return true;
-    }
-    return false;
+      doc.write(html);
+      doc.close();
+
+      setTimeout(() => {reject("Took too long")}, 3000);
+    });
   }
 
   resizeIFrame(newHeight: number) {
