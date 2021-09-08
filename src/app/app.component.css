@@ -28,7 +28,7 @@ app-quick-search {
     flex-grow: 1;
 }
 #SiteFooter {
-    padding: 4rem 1rem 2rem;
+    padding: 1rem;
     max-width: 90rem;
     margin: 0 auto;
 }
@@ -40,7 +40,7 @@ app-quick-search {
         font-size: 2rem;
     }
     #SiteFooter {
-        padding: 3rem 2rem 2rem;
+        padding: 2rem;
     }
 
 }

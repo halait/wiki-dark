@@ -115,6 +115,8 @@ img, video {
     background-color: #fff;
     filter: var(--filter);
 }
+
+
 .wd-control-heading {
     cursor: pointer;
     display: flex;
@@ -125,7 +127,32 @@ img, video {
     font-weight: 700;
     content: '-';
 }
-
 .wd-control-heading-hidden:before {
     content: '+';
+}
+
+.mw-parser-output #mp-topbanner {
+    display: none !important;
+}
+.mw-parser-output #mp-left, .mw-parser-output #mp-right {
+    display: table-row;
+}
+.mw-parser-output #mp-upper .mid-table {
+    display: none;
+}
+
+@media screen and (min-width: 60rem) {
+    body {
+        padding: 0 2rem;
+    }
+
+    .mw-parser-output #mp-topbanner {
+        display: block !important;
+    }
+    .mw-parser-output #mp-left, .mw-parser-output #mp-right {
+        display: table-cell;
+    }
+    .mw-parser-output #mp-upper .mid-table {
+        display: block;
+    }
 }

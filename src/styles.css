@@ -1,11 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 body {
     --bg-color: #000;
-    --color: #fff;
-    --anchor-color: #88f;
-    --anchor-color-visited: #bbf;
-    --iFrame-filter: invert(1);
-
+    --color: #f8f9fa;
+    --anchor-color: #69f;
+    --anchor-color-visited: #5af;
+    --scrollbar-track-color: #222;
+    --scrollbar-thumb-color: #888;
     margin: 0;
     background-color: var(--bg-color);
     color: var(--color);
@@ -17,12 +17,7 @@ body.light {
     --color: #000;
     --anchor-color: #00f;
     --anchor-color-visited: #1a0dab;
-    --iFrame-filter: none;
-}
-#WikiIFrame {
-    background-color: #fff;
-    color: #000;
-    filter: var(--iFrame-filter);
+    --scrollbar-track-color: #ddd;
 }
 a { 
     color: var(--anchor-color);
@@ -50,6 +45,16 @@ button {
     max-width: 90rem;
     margin: 0 auto;
     padding: 0 1rem;
+}
+/* TODO why not working? */
+body::-webkit-scrollbar {
+    background-color: var(--scrollbar-track-color);
+}
+body::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-track-color);
+}
+body::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-color);
 }
 @media screen and (min-width: 60rem) {
     .page-width {

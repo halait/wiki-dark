@@ -27,7 +27,6 @@ export class WikiComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.mobileMode.subscribe((mobileMode) => {
-      console.log('mobile mode changed: ' + mobileMode);
       this.mobileMode = mobileMode;
       if(this.iFrame) {
         this.setWiki();
@@ -36,8 +35,6 @@ export class WikiComponent implements OnInit {
   }
 
   async ngAfterViewInit() {
-    console.log('ngAfterViewInit');
-
     this.iFrame = document.getElementById('WikiIFrame') as HTMLIFrameElement;
     if(!this.iFrame) {
       throw "Can't access iFrame";
@@ -56,7 +53,6 @@ export class WikiComponent implements OnInit {
     */
 
     this.dataService.theme.subscribe((theme) => {
-      console.log('got theme at wiki componenet');
       this.setTheme(theme);
     });
 
@@ -75,7 +71,6 @@ export class WikiComponent implements OnInit {
     const doc = this.iFrame!.contentDocument as Document;
     if(!doc) throw 'No doc';
     if(!this.title) throw 'No title';
-    console.log('setting wiki');
     window.scrollTo(0, 0);
     let page;
     try {
@@ -85,9 +80,13 @@ export class WikiComponent implements OnInit {
       return;
     }
 
-
-    // TODO display error if needed
-    await this.writeWiki(doc, page);
+    try {
+      await this.writeWiki(doc, page);
+    } catch(e) {
+      // TODO display error
+      console.error(e);
+      return;
+    }   
 
     try {
       const decodedURL = decodeURIComponent(this.title);
@@ -104,23 +103,8 @@ export class WikiComponent implements OnInit {
     css.rel = 'stylesheet';
     css.type = 'text/css';
     doc.head.appendChild(css);
-
-    /*
-    // dynamic resizing
-    // doing it this way cause Chrome does not fire load event when using innerHTML method
-    let script = doc.createElement('script');
-    script.src = this.origin + '/assets/wiki-script.js';
-    doc.head.appendChild(script);
-    */
-
-    console.log(this.theme + ' theme setting wiki');
+    
     this.setTheme(this.theme);
-
-    /*
-    script = doc.createElement('script');
-    script.src = 'https://en.wikipedia.org/api/rest_v1/data/javascript/mobile/pagelib';
-    doc.head.appendChild(script);
-    */
 
     const resizeObserver = new ResizeObserver((entry) => {
       const e = entry[0];
@@ -132,56 +116,49 @@ export class WikiComponent implements OnInit {
     });
     resizeObserver.observe(doc.body);
     
-
-
-    //setTimeout(() => {
-      const toc = this.getTableOfContents(doc);
-      for(let i = 0, len = toc.length; i != len; ++i) {
-        if(toc[i].level != 1) continue;
-        const section = doc.querySelector(`section[data-mw-section-id="${toc[i].id}"]`) as HTMLElement;
-        if(!section) continue;
-        const heading = doc.getElementById(toc[i].anchor) as HTMLHeadingElement;
-        if(!heading) continue;
-        if(heading.parentElement != section) {
-          if(
-            !heading.parentElement ||
-            heading.parentElement.parentElement != section ||
-            heading.parentElement.getAttribute('onclick')) {
-              continue;
-          }
-          heading.parentElement.remove();
-        } else {
-          heading.remove();
+    const toc = this.getTableOfContents(doc);
+    for(let i = 0, len = toc.length; i != len; ++i) {
+      if(toc[i].level != 1) continue;
+      const section = doc.querySelector(`section[data-mw-section-id="${toc[i].id}"]`) as HTMLElement;
+      if(!section) continue;
+      const heading = doc.getElementById(toc[i].anchor) as HTMLHeadingElement;
+      if(!heading) continue;
+      if(heading.parentElement != section) {
+        if(
+          !heading.parentElement ||
+          heading.parentElement.parentElement != section ||
+          heading.parentElement.getAttribute('onclick')) {
+            continue;
         }
-        const div = doc.createElement('div');
-
-
-        while(section.hasChildNodes()) {
-          div.appendChild(section.firstChild!);
-        }
-        //div.innerHTML = section.innerHTML;
-        section.innerHTML = '';
-        div.id = 'wd-' + toc[i].id;
-        div.style.display = 'none';
-        section.appendChild(heading);
-        section.appendChild(div);
-        heading.classList.add('wd-control-heading');
-        heading.classList.add('wd-control-heading-hidden');
-        heading.dataset.divId = div.id;
-        heading.addEventListener('click', function(e) {
-          const heading = e.currentTarget as HTMLHeadingElement;
-          const hide = heading.classList.toggle('wd-control-heading-hidden');
-          const div = heading.parentElement!.querySelector('#' + heading.dataset.divId!) as HTMLElement;
-          if(hide) {
-            div.style.display = 'none';
-          } else {
-            div.style.display = 'block';
-          }
-        });
+        heading.parentElement.remove();
+      } else {
+        heading.remove();
       }
-    //}, 1000);
+      const div = doc.createElement('div');
 
 
+      while(section.hasChildNodes()) {
+        div.appendChild(section.firstChild!);
+      }
+      section.innerHTML = '';
+      div.id = 'wd-' + toc[i].id;
+      div.style.display = 'none';
+      section.appendChild(heading);
+      section.appendChild(div);
+      heading.classList.add('wd-control-heading');
+      heading.classList.add('wd-control-heading-hidden');
+      heading.dataset.divId = div.id;
+      heading.addEventListener('click', function(e) {
+        const heading = e.currentTarget as HTMLHeadingElement;
+        const hide = heading.classList.toggle('wd-control-heading-hidden');
+        const div = heading.parentElement!.querySelector('#' + heading.dataset.divId!) as HTMLElement;
+        if(hide) {
+          div.style.display = 'none';
+        } else {
+          div.style.display = 'block';
+        }
+      });
+    }
 
     try {
       this.changeToInternalLinks();
@@ -270,31 +247,30 @@ export class WikiComponent implements OnInit {
 
   setTheme(theme?: string) {
     this.theme = theme;
-    const doc = this.iFrame!.contentDocument;
+    if(!this.iFrame) {
+      throw 'No iFrame';
+    }
+    const doc = this.iFrame.contentDocument;
     if(!doc || !doc.body) {
-      console.error('no doc or doc.body in frame');
-      return;
-    } 
-    if(theme === 'dark') {
-      doc.body.classList.remove('light');
-    } else {
-      doc.body.classList.add('light');
+      throw 'no doc or doc.body in frame';
     }
-    
-    /*
-    if(theme == 'dark') {
-      const css = doc.createElement('link');
-      css.href = this.getBaseUrl() + '/assets/wiki-styles.css';
-      css.rel = 'stylesheet';
-      css.type = 'text/css';
-      doc.head.appendChild(css);
+
+    doc.body.classList.add('light');
+    this.iFrame!.classList.add('light');
+
+    if(this.mobileMode && this.iFrame.contentWindow && (this.iFrame.contentWindow as any).pcs && this.title != 'Main_Page') {
+      const win = this.iFrame.contentWindow as any;
+      if(theme === 'dark') {
+        win.pcs.c1.Page.setTheme('pcs-theme-black');
+      } else {
+        win.pcs.c1.Page.setTheme('pcs-theme-light');
+      }
     } else {
-      const css = doc.querySelector(`link[href="${this.getBaseUrl() + '/assets/wiki-styles.css'}"]`);
-      console.log(css);
-      if(!css) return; 
-      doc.head.removeChild(css);
+      if(theme === 'dark') {
+        doc.body.classList.remove('light');
+        this.iFrame!.classList.remove('light');
+      }
     }
-    */
   }
 
   writeWiki(doc: Document, html: string) {
@@ -303,7 +279,6 @@ export class WikiComponent implements OnInit {
 
     return new Promise((resolve, reject) => {
       doc.addEventListener('readystatechange', () => {
-        console.warn('doc.readyState: ' + doc.readyState);
         if(doc.readyState != 'loading') {
           resolve(doc.readyState);
         }
@@ -330,7 +305,6 @@ export class WikiComponent implements OnInit {
     // TODO why do I need padding?
     this.iFrame!.height = (newHeight + 64).toString();
     */
-    console.log('newHeight: ' + newHeight);
     if(Math.abs(newHeight - this.iFrameHeight) < 32) return;
     this.iFrame!.height = (newHeight + 128).toString();
     this.iFrameHeight = newHeight;

@@ -53,7 +53,6 @@ export class DataService {
   }
   
   async getWiki(title: string): Promise<any> {
-    console.log('getting wiki');
     /*
       `https://en.wikipedia.org/w/rest.php/v1/page/${title}/with_html`
 
@@ -66,7 +65,7 @@ export class DataService {
     const mobileMode = this.mobileMode.getValue()
     const cached = this.wikiCache.get(this.getCacheKey(title, mobileMode));
     if(cached) {
-      console.warn('cache hit');
+      console.log('cache hit');
       return cached;
     }
 
