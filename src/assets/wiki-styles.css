@@ -92,6 +92,12 @@ body.light {
 */
 body {
     --filter: invert(1);
+
+
+    --link-color: #960;
+    --link-visited-color: #4a1;
+    --link-external-color: #730;
+
     line-height: 1.75;
     font-family: sans-serif;
     /* to allow resizing */
@@ -110,6 +116,18 @@ body {
 }
 body.light {
     --filter: none;
+    --link-color: #21a;
+    --link-visited-color: rgb(102, 0, 153);
+    --link-external-color: #36b;
+}
+a {
+    color: var(--link-color);
+}
+a:visited {
+    color: var(--link-visited-color);
+}
+.mw-parser-output a.extiw, .mw-parser-output a.external {
+    color: var(--link-external-color)
 }
 img, video {
     background-color: #fff;

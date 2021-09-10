@@ -3,7 +3,7 @@ body {
     --bg-color: #000;
     --color: #f8f9fa;
     --anchor-color: #69f;
-    --anchor-color-visited: #5af;
+    --anchor-color-visited: #b5e;
     --scrollbar-track-color: #222;
     --scrollbar-thumb-color: #888;
     margin: 0;
@@ -15,8 +15,8 @@ body {
 body.light {
     --bg-color: #fff;
     --color: #000;
-    --anchor-color: #00f;
-    --anchor-color-visited: #1a0dab;
+    --anchor-color: #21a;
+    --anchor-color-visited: rgb(102, 0, 153);
     --scrollbar-track-color: #ddd;
 }
 a { 

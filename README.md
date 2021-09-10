@@ -1,6 +1,6 @@
 # Wiki Dark
 ## Overview
-Single-page application that serves Wikipedia articles using <a href='https://wiki-dark.web.app/wiki/Angular_%28web_framework%29'>Angular</a>, <a href='https://www.mediawiki.org/wiki/RESTBase'>Wikimedia REST API</a>, and <a href='https://www.mediawiki.org/wiki/API:REST_API'>Mediawiki Core REST API</a>. Featuring dark mode, search, and collapsible sections. Users are served mobile optimized pages on smaller screens using a separate REST API endpoint. All links to Wikipedia articles are redirected to show within the application. Visit <a href='https://wiki-dark.web.app/'>https://wiki-dark.web.app/</a> to see it live.
+Wiki Dark is single-page application that serves Wikipedia articles using <a href='https://wiki-dark.web.app/wiki/Angular_%28web_framework%29'>Angular</a>, <a href='https://www.mediawiki.org/wiki/RESTBase'>Wikimedia REST API</a>, and <a href='https://www.mediawiki.org/wiki/API:REST_API'>Mediawiki Core REST API</a>. Featuring dark mode, search, and collapsible sections. Users are served mobile optimized pages on smaller screens using a separate REST API endpoint. All links to Wikipedia articles are redirected to show within the application. Wiki Dark only works in Chromium-based web browsers. Visit <a href='https://wiki-dark.web.app/'>https://wiki-dark.web.app/</a> to see it live.
 <!--
 # WikiDark
 
