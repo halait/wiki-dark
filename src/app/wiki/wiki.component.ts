@@ -274,7 +274,6 @@ export class WikiComponent implements OnInit {
   }
 
   writeWiki(doc: Document, html: string) {
-
     doc.open();
 
     return new Promise((resolve, reject) => {
@@ -287,7 +286,7 @@ export class WikiComponent implements OnInit {
       doc.write(html);
       doc.close();
 
-      setTimeout(() => {reject("Took too long")}, 3000);
+      setTimeout(() => {reject("Took too long")}, 5000);
     });
   }
 
