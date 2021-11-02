@@ -45,6 +45,25 @@ export class WikiComponent implements OnInit {
       throw 'Unable to access iFrame doc';
     }
 
+
+
+
+    const resizeObserver = new ResizeObserver((entry) => {
+      const e = entry[0];
+      let newHeight = e.contentRect.height;
+      if(e.borderBoxSize && e.borderBoxSize.length) {
+        newHeight = e.borderBoxSize[0].blockSize;
+      }
+      this.resizeIFrame(newHeight);
+    });
+    resizeObserver.observe(doc.body);
+
+
+
+
+
+
+
     /*
     setInterval(() => {
       console.log('try resize');
@@ -66,6 +85,8 @@ export class WikiComponent implements OnInit {
 
     // TODO destroy and create iFrame everytime, javascript files stay loaded, memory leak (pcs from mobile version persists + other stuff probably)
 
+
+    this.iFrame!.style.display = 'none';
 
 
     const doc = this.iFrame!.contentDocument as Document;
@@ -106,6 +127,7 @@ export class WikiComponent implements OnInit {
     
     this.setTheme(this.theme);
 
+    /*
     const resizeObserver = new ResizeObserver((entry) => {
       const e = entry[0];
       let newHeight = e.contentRect.height;
@@ -115,6 +137,7 @@ export class WikiComponent implements OnInit {
       this.resizeIFrame(newHeight);
     });
     resizeObserver.observe(doc.body);
+    */
     
     const toc = this.getTableOfContents(doc);
     for(let i = 0, len = toc.length; i != len; ++i) {
@@ -135,7 +158,6 @@ export class WikiComponent implements OnInit {
         heading.remove();
       }
       const div = doc.createElement('div');
-
 
       while(section.hasChildNodes()) {
         div.appendChild(section.firstChild!);
@@ -159,13 +181,12 @@ export class WikiComponent implements OnInit {
         }
       });
     }
-
     try {
       this.changeToInternalLinks();
     } catch(e) {
       console.error(e);
     }
-
+    this.iFrame!.style.display = 'block';
   }
 
   // from pcs
