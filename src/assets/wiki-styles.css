@@ -112,7 +112,6 @@ body {
     padding: 0 1rem;
 
     position: relative;
-
 }
 body.light {
     --filter: none;

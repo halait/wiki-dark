@@ -18,6 +18,17 @@ export class WikiComponent implements OnInit {
   iFrameHeight = 0;
   origin =  window.location.origin;
 
+  resizeObserver = new ResizeObserver((entry) => {
+    const e = entry[0];
+    let newHeight = e.contentRect.height;
+    if(e.borderBoxSize && e.borderBoxSize.length) {
+      newHeight = e.borderBoxSize[0].blockSize;
+    }
+    this.resizeIFrame(newHeight);
+  });
+
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -46,24 +57,6 @@ export class WikiComponent implements OnInit {
     }
 
 
-
-
-    const resizeObserver = new ResizeObserver((entry) => {
-      const e = entry[0];
-      let newHeight = e.contentRect.height;
-      if(e.borderBoxSize && e.borderBoxSize.length) {
-        newHeight = e.borderBoxSize[0].blockSize;
-      }
-      this.resizeIFrame(newHeight);
-    });
-    resizeObserver.observe(doc.body);
-
-
-
-
-
-
-
     /*
     setInterval(() => {
       console.log('try resize');
@@ -85,9 +78,7 @@ export class WikiComponent implements OnInit {
 
     // TODO destroy and create iFrame everytime, javascript files stay loaded, memory leak (pcs from mobile version persists + other stuff probably)
 
-
     this.iFrame!.style.display = 'none';
-
 
     const doc = this.iFrame!.contentDocument as Document;
     if(!doc) throw 'No doc';
@@ -101,13 +92,17 @@ export class WikiComponent implements OnInit {
       return;
     }
 
+    this.resizeObserver.disconnect();
+
     try {
       await this.writeWiki(doc, page);
     } catch(e) {
       // TODO display error
       console.error(e);
       return;
-    }   
+    }
+    this.resizeObserver.observe(doc.body);
+    doc.body.style.height = '0';
 
     try {
       const decodedURL = decodeURIComponent(this.title);
@@ -126,19 +121,8 @@ export class WikiComponent implements OnInit {
     doc.head.appendChild(css);
     
     this.setTheme(this.theme);
-
-    /*
-    const resizeObserver = new ResizeObserver((entry) => {
-      const e = entry[0];
-      let newHeight = e.contentRect.height;
-      if(e.borderBoxSize && e.borderBoxSize.length) {
-        newHeight = e.borderBoxSize[0].blockSize;
-      }
-      this.resizeIFrame(newHeight);
-    });
-    resizeObserver.observe(doc.body);
-    */
     
+
     const toc = this.getTableOfContents(doc);
     for(let i = 0, len = toc.length; i != len; ++i) {
       if(toc[i].level != 1) continue;
