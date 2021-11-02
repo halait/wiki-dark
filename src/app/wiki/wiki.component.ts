@@ -102,7 +102,7 @@ export class WikiComponent implements OnInit {
       return;
     }
     this.resizeObserver.observe(doc.body);
-    doc.body.style.height = '0';
+    this.resizeIFrame(0);
 
     try {
       const decodedURL = decodeURIComponent(this.title);
