@@ -8,6 +8,14 @@
     ],
     "rewrites": [
       {
+        "source": "/robots.txt",
+        "destination": "/robots.txt"
+      },
+      {
+        "source": "/googledfcb7331e77b0742.html",
+        "destination": "/googledfcb7331e77b0742.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

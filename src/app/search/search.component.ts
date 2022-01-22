@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -11,16 +11,18 @@ import { DataService } from '../data.service';
   host: {'class': 'page-width'}
 })
 export class SearchComponent implements OnInit {
+  /*
   searchForm = this.formBuilder.group({
     query: ['', Validators.required]
   });
+  */
   results: any[] = [];
   message?: string;
   constructor(
-    private formBuilder: FormBuilder,
+    //private formBuilder: FormBuilder,
     private dataService : DataService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    /*private router: Router*/) { }
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((map) => {

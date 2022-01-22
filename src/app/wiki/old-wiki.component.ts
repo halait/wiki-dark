@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -17,8 +17,6 @@ export class WikiComponent implements OnInit {
   mobileMode?: boolean;
   iFrameHeight = 0;
   origin =  window.location.origin;
-
-  @ViewChild('div') container!: ElementRef;
 
   resizeObserver = new ResizeObserver((entry) => {
     const e = entry[0];
@@ -41,11 +39,23 @@ export class WikiComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.mobileMode.subscribe((mobileMode) => {
       this.mobileMode = mobileMode;
-      this.setWiki();
+      if(this.iFrame) {
+        this.setWiki();
+      }
     });
   }
 
   async ngAfterViewInit() {
+    this.iFrame = document.getElementById('WikiIFrame') as HTMLIFrameElement;
+    if(!this.iFrame) {
+      throw "Can't access iFrame";
+    }
+
+    const doc = this.iFrame.contentDocument;
+    if(!doc) {
+      throw 'Unable to access iFrame doc';
+    }
+
     this.dataService.theme.subscribe((theme) => {
       this.setTheme(theme);
     });
@@ -57,44 +67,27 @@ export class WikiComponent implements OnInit {
   }
 
   async setWiki() {
-    if(!this.title) return;
 
-    let wiki;
+    // TODO destroy and create iFrame everytime, javascript files stay loaded, memory leak (pcs from mobile version persists + other stuff probably)
+
+    this.iFrame!.style.display = 'none';
+
+    const doc = this.iFrame!.contentDocument as Document;
+    if(!doc) throw 'No doc';
+    if(!this.title) throw 'No title';
+    window.scrollTo(0, 0);
+    let page;
     try {
-      wiki = await this.dataService.getWiki(this.title);
+      page = await this.dataService.getWiki(this.title);
     } catch {
-      // TODO failed to fetch error
-      console.error('Failed to fetch Wiki');
+      this.wikiTitle = 'Error: Unable to fetch page.';
       return;
     }
 
-    if(wiki.iframeHeight) {
-      this.container.nativeElement.style.minHeight = wiki.iframeHeight + 'px';
-    }
-
-    if(this.iFrame) {
-      const wiki = {
-        html: this.iFrame.contentDocument!.documentElement.innerHTML,
-        isProcessed: true,
-        iframeHeight: this.iFrameHeight
-      }
-      this.dataService.cacheWiki(this.iFrame.dataset.title!, this.iFrame.dataset.isMobileVersion! === 'true', wiki);
-      this.iFrame.remove();
-    }
-    this.iFrame = document.createElement('iframe');
-
-    this.iFrame.style.opacity = '0';
-
-    this.iFrame.setAttribute('width', '100%');
-    this.iFrame.dataset.title = this.title;
-    this.iFrame.dataset.isMobileVersion = this.mobileMode!.toString();
-    this.iFrame.id = 'WikiIFrame';
-    this.container.nativeElement.appendChild(this.iFrame);
-    const doc = this.iFrame.contentDocument as Document;
-
     this.resizeObserver.disconnect();
+
     try {
-      await this.writeWiki(doc, wiki.html);
+      await this.writeWiki(doc, page);
     } catch(e) {
       // TODO display error
       console.error(e);
@@ -105,8 +98,7 @@ export class WikiComponent implements OnInit {
 
     try {
       const decodedURL = decodeURIComponent(this.title);
-      const title = (decodedURL as any).replaceAll('_', ' ') as string;
-      this.wikiTitle = title.charAt(0).toUpperCase() + title.slice(1);
+      this.wikiTitle = (decodedURL as any).replaceAll('_', ' ') as string;
       this.titleService.setTitle(this.wikiTitle + ' - Wiki Dark');
     } catch(e) {
       this.wikiTitle = '';
@@ -114,69 +106,21 @@ export class WikiComponent implements OnInit {
       console.error('Unable to decode URL');
     }
 
-    if(!wiki.isProcessed) await this.proccessIframe();
-
-    this.changeToInternalLinks();
-
-    const headings = doc.querySelectorAll('.wd-control-heading');
-    for(let i = 0, len = headings.length; i != len; ++i) {
-      const heading = headings[i];
-      heading.addEventListener('click', function(e) {
-        const heading = e.currentTarget as HTMLHeadingElement;
-        const hide = heading.classList.toggle('wd-control-heading-hidden');
-        const div = heading.parentElement!.querySelector('#' + heading.dataset.divId!) as HTMLElement;
-        if(hide) {
-          div.style.display = 'none';
-        } else {
-          div.style.display = 'block';
-        }
-      });
-    }
-
-    this.setTheme(this.theme);
-
-    this.iFrame.style.opacity = '1';
-
-    //this.container.nativeElement.style.minHeight = 0 + 'px';
-
-    if(!wiki.isProcessed) {
-      window.scrollTo(0, 0);
-    }
-  }
-
-  
-  wait() {
-    return new Promise(function(resolve) {
-      setTimeout(() => {resolve(null)}, 0);
-    });
-  }
-  
-  style!: string;
-
-  async proccessIframe() {
-    const doc = this.iFrame!.contentDocument!;
-    const css = doc.createElement('style');
-
-    //css.href = this.origin + '/assets/wiki-styles.css';
-    //css.rel = 'stylesheet';
-    //css.type = 'text/css';
-
-
-    if(!this.style) {
-      const res = await fetch('/assets/wiki-styles.css');
-      this.style = await res.text();
-    }
-    css.innerHTML = this.style;
-
+    const css = doc.createElement('link');
+    css.href = this.origin + '/assets/wiki-styles.css';
+    css.rel = 'stylesheet';
+    css.type = 'text/css';
     doc.head.appendChild(css);
-
-
 
     /*
     const script = doc.createElement('script');
     script.src = this.origin + '/assets/wiki-script.js';
     doc.head.appendChild(script);
     */
+
+    
+    this.setTheme(this.theme);
+    
 
     const toc = this.getTableOfContents(doc);
     for(let i = 0, len = toc.length; i != len; ++i) {
@@ -209,8 +153,32 @@ export class WikiComponent implements OnInit {
       heading.classList.add('wd-control-heading');
       heading.classList.add('wd-control-heading-hidden');
       heading.dataset.divId = div.id;
+      heading.addEventListener('click', function(e) {
+        const heading = e.currentTarget as HTMLHeadingElement;
+        const hide = heading.classList.toggle('wd-control-heading-hidden');
+        const div = heading.parentElement!.querySelector('#' + heading.dataset.divId!) as HTMLElement;
+        if(hide) {
+          div.style.display = 'none';
+        } else {
+          div.style.display = 'block';
+        }
+      });
     }
+    try {
+      this.changeToInternalLinks();
+    } catch(e) {
+      console.error(e);
+    }
+    this.iFrame!.style.display = 'block';
   }
+
+  /*
+  wait() {
+    return new Promise(function(resolve) {
+      setTimeout(() => {resolve(null)}, 0);
+    });
+  }
+  */
 
   // from pcs
   getTableOfContents(doc: any) {
@@ -273,26 +241,31 @@ export class WikiComponent implements OnInit {
           a.href = this.origin + pathname;
         }
       }
-      if(a.origin === this.origin) {
-        a.addEventListener('click', (e) => {
-          this.navigateToLink(e);
-        });
-      }
+      a.addEventListener('click', (e) => {
+        this.navigateToLink(e);
+      });
     }
   }
 
   navigateToLink(e: MouseEvent) {
     e.preventDefault();
     const elem = e.currentTarget as HTMLAnchorElement;
-    this.ngZone.run(() => {this.router.navigate([elem.pathname]);});
+    if(elem.origin === this.origin) {
+      this.ngZone.run(() => {this.router.navigate([elem.pathname]);});
+    } else {
+      window.location.href = elem.href;
+    }
   }
 
   setTheme(theme?: string) {
     this.theme = theme;
     if(!this.iFrame) {
-      return;
+      throw 'No iFrame';
     }
-    const doc = this.iFrame.contentDocument!;
+    const doc = this.iFrame.contentDocument;
+    if(!doc || !doc.body) {
+      throw 'no doc or doc.body in frame';
+    }
 
     doc.body.classList.add('light');
     this.iFrame!.classList.add('light');
@@ -328,7 +301,7 @@ export class WikiComponent implements OnInit {
       doc.write(html);
 
       this.iFrame!.addEventListener('load', () => {
-        //console.log(doc.readyState + ' time: ' + Date.now());
+        console.log(doc.readyState + ' time: ' + Date.now());
         if(doc.readyState === 'complete') {
           resolve(doc.readyState);
         }

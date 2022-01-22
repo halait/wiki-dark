@@ -1,9 +1,0 @@
-#WikiIFrame {
-    border: none;
-    filter: invert(1);
-    color: #000;
-    background-color: #fff;
-}
-.light#WikiIFrame {
-    filter: none;
-}

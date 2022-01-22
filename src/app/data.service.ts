@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Wiki } from './wiki';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class DataService {
   private wikiCache = new Map();
 
   constructor() {
-    this.setTheme(this.theme.getValue());
+    //this.setTheme(this.theme.getValue());
     this.mobileModeQueryList.addEventListener('change', (query) => {
       // why does it fire twice on when going to small?
       if(this.mobileMode.getValue() != query.matches) {
@@ -34,14 +35,6 @@ export class DataService {
   */
 
   async getSearchResults(query: string): Promise<any[]> {
-    /*
-    try {
-      const text = await this.getWiki(query);
-      return text;
-    } catch(e) {
-      console.error('getWiki threw');
-    }
-    */
     const response = await fetch(
       `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${query}&limit=10`,
       {
@@ -52,7 +45,7 @@ export class DataService {
     return data.pages as any[];
   }
   
-  async getWiki(title: string): Promise<any> {
+  async getWiki(title: string): Promise<Wiki> {
     /*
       `https://en.wikipedia.org/w/rest.php/v1/page/${title}/with_html`
 
@@ -62,10 +55,9 @@ export class DataService {
       this.wikiCache.clear();
     }
 
-    const mobileMode = this.mobileMode.getValue()
+    const mobileMode = this.mobileMode.getValue();
     const cached = this.wikiCache.get(this.getCacheKey(title, mobileMode));
     if(cached) {
-      console.log('cache hit');
       return cached;
     }
 
@@ -84,11 +76,21 @@ export class DataService {
       throw 'Unable to get wiki';
     }
 
-    const text = await response.text()
+    const text = await response.text();
 
-    this.wikiCache.set(this.getCacheKey(title, mobileMode), text);
+    const wiki = {
+      html: text,
+      isProcessed: false,
+      iframeHeight: 0
+    };
 
-    return text;
+    this.wikiCache.set(this.getCacheKey(title, mobileMode), wiki);
+
+    return wiki;
+  }
+
+  cacheWiki(title: string, isMobileVersion: boolean, wiki: Wiki) {
+    this.wikiCache.set(this.getCacheKey(title, isMobileVersion), wiki);
   }
 
   getCacheKey(title: string, mobileMode?: boolean) {
