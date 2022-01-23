@@ -4,13 +4,22 @@
     padding: 0;
 }
 .search-result {
-    padding: 1rem 0;
+    margin: 2rem 0;
+    padding: 1rem;
+    border-radius: 8px;
+    max-width: 40rem;
 }
 .search-result-link {
     font-size: 1.25rem;
     text-decoration: none;
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+.search-result-description {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-top: -0.2rem;
+    margin-bottom: 0.2rem;
 }
 #message {
     margin: 2rem 0;

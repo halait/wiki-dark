@@ -49,6 +49,8 @@ export class WikiComponent implements OnInit {
     this.dataService.theme.subscribe((theme) => {
       this.setTheme(theme);
     });
+  
+    await this.wait();
 
     this.route.paramMap.subscribe((map) => {
       this.title = map.get('title');
@@ -68,17 +70,18 @@ export class WikiComponent implements OnInit {
       return;
     }
 
-    if(wiki.iframeHeight) {
-      this.container.nativeElement.style.minHeight = wiki.iframeHeight + 'px';
-    }
+    this.container.nativeElement.style.minHeight = wiki.iframeHeight + 'px';
 
     if(this.iFrame) {
       const wiki = {
         html: this.iFrame.contentDocument!.documentElement.innerHTML,
         isProcessed: true,
-        iframeHeight: this.iFrameHeight
+        iframeHeight: this.iFrameHeight,
+        scrollPosition: window.scrollY
       }
       this.dataService.cacheWiki(this.iFrame.dataset.title!, this.iFrame.dataset.isMobileVersion! === 'true', wiki);
+      this.resizeObserver.disconnect();
+      this.iFrameHeight = 0;
       this.iFrame.remove();
     }
     this.iFrame = document.createElement('iframe');
@@ -92,7 +95,7 @@ export class WikiComponent implements OnInit {
     this.container.nativeElement.appendChild(this.iFrame);
     const doc = this.iFrame.contentDocument as Document;
 
-    this.resizeObserver.disconnect();
+    
     try {
       await this.writeWiki(doc, wiki.html);
     } catch(e) {
@@ -100,8 +103,7 @@ export class WikiComponent implements OnInit {
       console.error(e);
       return;
     }
-    this.resizeObserver.observe(doc.body);
-    this.resizeIFrame(0);
+    //this.resizeIFrame(0);
 
     try {
       const decodedURL = decodeURIComponent(this.title);
@@ -135,12 +137,20 @@ export class WikiComponent implements OnInit {
 
     this.setTheme(this.theme);
 
+    console.log('break');
+
     this.iFrame.style.opacity = '1';
 
-    //this.container.nativeElement.style.minHeight = 0 + 'px';
+    this.resizeIFrame(wiki.iframeHeight);
+    this.resizeObserver.observe(doc.body);
 
-    if(!wiki.isProcessed) {
+    this.container.nativeElement.style.minHeight = 0 + 'px';
+
+    // TODO fix mobile scrolling
+    if(this.mobileMode) {
       window.scrollTo(0, 0);
+    } else {
+      window.scrollTo(0, wiki.scrollPosition);
     }
   }
 
@@ -273,18 +283,16 @@ export class WikiComponent implements OnInit {
           a.href = this.origin + pathname;
         }
       }
-      if(a.origin === this.origin) {
-        a.addEventListener('click', (e) => {
-          this.navigateToLink(e);
-        });
-      }
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const elem = e.currentTarget as HTMLAnchorElement;
+        if(elem.origin === this.origin) {
+          this.ngZone.run(() => {this.router.navigate([elem.pathname]);});
+        } else {
+          window.location.href = a.href;
+        }
+      });
     }
-  }
-
-  navigateToLink(e: MouseEvent) {
-    e.preventDefault();
-    const elem = e.currentTarget as HTMLAnchorElement;
-    this.ngZone.run(() => {this.router.navigate([elem.pathname]);});
   }
 
   setTheme(theme?: string) {
@@ -340,6 +348,7 @@ export class WikiComponent implements OnInit {
   }
 
   resizeIFrame(newHeight: number) {
+    console.log('resizing ');
     if(Math.abs(newHeight - this.iFrameHeight) < 32) return;
     this.iFrame!.height = (newHeight + 128).toString();
     this.iFrameHeight = newHeight;

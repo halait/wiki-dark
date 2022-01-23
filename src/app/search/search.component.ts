@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { DataService } from '../data.service';
 
@@ -25,9 +26,12 @@ export class SearchComponent implements OnInit {
     /*private router: Router*/) { }
 
   ngOnInit(): void {
+    this.results = this.route.snapshot.data.results;
+    /*
     this.route.queryParamMap.subscribe((map) => {
-      this.search(map.get('q'));
+      //this.search(map.get('q'));
     });
+    */
   }
   
   async search(query: string | null) {
@@ -40,4 +44,17 @@ export class SearchComponent implements OnInit {
       this.message = 'Your search - ' + query + ' - did not match... anything...';
     }
   }
+
+  /*
+  async resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Promise<any> {
+    const query = route.queryParamMap.get('q');
+    if(!query) {
+      return;
+    }
+    this.results = await this.dataService.getSearchResults(query);
+  }
+  */
 }

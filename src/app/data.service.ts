@@ -81,7 +81,8 @@ export class DataService {
     const wiki = {
       html: text,
       isProcessed: false,
-      iframeHeight: 0
+      iframeHeight: 0,
+      scrollPosition: 0
     };
 
     this.wikiCache.set(this.getCacheKey(title, mobileMode), wiki);

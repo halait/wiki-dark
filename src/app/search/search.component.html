@@ -11,6 +11,8 @@
     <li *ngFor='let result of results' class='search-result'>
         <a routerLink='/wiki/{{ result.key }}' class='search-result-link'>{{ result.title }}</a>
         <div class='search-result-description'>{{ result.description }}</div>
+        <div class='search-result-excerpt' [innerHTML]='result.excerpt'></div>
+
     </li>
 </ol>
 <div *ngIf='message' id='message'>{{ message }}</div>

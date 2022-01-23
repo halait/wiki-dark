@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchComponent } from './search/search.component';
+import { SearchResolver } from './search/search.resolver';
 import { WikiResolver } from './wiki.resolver';
 import { WikiComponent } from './wiki/wiki.component';
 const routes: Routes = [
@@ -11,11 +12,14 @@ const routes: Routes = [
     resolve: {wiki: WikiResolver}
   },
   // TODO search resolver
-  {path: 'search?:query', component: SearchComponent},
-  {path: 'search', component: SearchComponent}
+  {
+    path: 'search',
+    component: SearchComponent,
+    resolve: {
+      results: SearchResolver
+    }
+  }
 ];
-
-
 
 @NgModule({
   declarations: [],
