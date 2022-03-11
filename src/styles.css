@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 body {
     --bg-color: #000;
-    --color: #f8f9fa;
-    --anchor-color: #69f;
-    --anchor-color-visited: #b5e;
-    --scrollbar-track-color: #222;
-    --scrollbar-thumb-color: #888;
+    --color: #999;
+    --secondary-color: #777;
+    --anchor-color: #66f;
+    --anchor-color-visited: #b3d;
+    --scrollbar-track-color: #000;
+    --scrollbar-thumb-color: #444;
     margin: 0;
     background-color: var(--bg-color);
     color: var(--color);
@@ -14,10 +15,12 @@ body {
 }
 body.light {
     --bg-color: #fff;
-    --color: #000;
-    --anchor-color: #21a;
-    --anchor-color-visited: rgb(102, 0, 153);
-    --scrollbar-track-color: #ddd;
+    --color: #666;
+    --secondary-color: #888;
+    --anchor-color: #33c;
+    --anchor-color-visited: #80a;
+    --scrollbar-track-color: #fff;
+    --scrollbar-thumb-color: #bbb;
 }
 a { 
     color: var(--anchor-color);

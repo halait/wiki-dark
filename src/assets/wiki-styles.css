@@ -92,18 +92,22 @@ body.light {
 */
 body {
     --filter: invert(1);
+    --bg-color: #fff;
+    --color: #666;
+    --link-color: #990;
+    --link-visited-color: #4c2;
+    --link-external-color: #c42;
+    
 
-
-    --link-color: #960;
-    --link-visited-color: #4a1;
-    --link-external-color: #730;
+    color: var(--color);
+    background-color: var(--bg-color);
 
     line-height: 1.75;
     font-family: sans-serif;
     /* to allow resizing */
     height: max-content;
 
-    /* mobile version ovverides */
+    /* mobile version overides */
     overflow: auto;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -113,11 +117,29 @@ body {
 
     position: relative;
 }
+/* Mobile only override */
+.pcs-theme-black {
+    --primary-text-color: #999;
+    --secondary-text-color: #777;
+    --link-color: #33c;
+    --border-color: #43464a;
+    --footer-title-text-color: #f8f9fa;
+    --android-active-edit-link-background: #101418;
+    --collapse-table-background: #222;
+    --footer-heading-text-color: #f8f9fa;
+    --footer-license-text-color: #a2a9b1;
+    --footer-readmore-description-text-color: #a2a9b1;
+    --edit-section-link-container-opacity: 0.7;
+    --glossary-link-color: var(--primary-text-color);
+    --collapse-table-text-color: var(--primary-text-color);
+    --figcaption-text-color: var(--primary-text-color);
+    --mid-background: #111;
+}
 body.light {
     --filter: none;
-    --link-color: #21a;
-    --link-visited-color: rgb(102, 0, 153);
-    --link-external-color: #36b;
+    --link-color: #33c;
+    --link-visited-color: #80a;
+    --link-external-color: #08a;
 }
 a {
     color: var(--link-color);
@@ -126,7 +148,13 @@ a:visited {
     color: var(--link-visited-color);
 }
 .mw-parser-output a.extiw, .mw-parser-output a.external {
-    color: var(--link-external-color)
+    color: var(--link-external-color);
+}
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color);
+}
+.infobox {
+    color: inherit;
 }
 img, video {
     background-color: #fff;

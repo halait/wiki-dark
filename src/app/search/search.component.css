@@ -17,7 +17,7 @@
 }
 .search-result-description {
     font-size: 0.9rem;
-    color: #ccc;
+    color: var(--secondary-color);
     margin-top: -0.2rem;
     margin-bottom: 0.2rem;
 }

@@ -3,17 +3,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    /*
-    --site-header-height: 2rem;
-    height: var(--site-header-height);
-    line-height: var(--site-header-height);
-    */
 }
 #HeaderLogo {
     font-size: 1.6rem;
     font-weight: 700;
-    color: inherit;
+    color: inherit; /* Bug causes .undecorated-link style to not work? */
     flex-shrink: 0;
 }
 #SiteHeaderMenu {
