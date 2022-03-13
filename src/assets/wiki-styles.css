@@ -151,7 +151,7 @@ a:visited {
     color: var(--link-external-color);
 }
 h1, h2, h3, h4, h5, h6 {
-    color: var(--color);
+    color: inherit;
 }
 .infobox {
     color: inherit;
@@ -160,8 +160,9 @@ img, video {
     background-color: #fff;
     filter: var(--filter);
 }
-
-
+.mw-parser-output #mp-left {
+    color: inherit !important;
+}
 .wd-control-heading {
     cursor: pointer;
     display: flex;
