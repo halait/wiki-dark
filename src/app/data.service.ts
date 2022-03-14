@@ -28,12 +28,6 @@ export class DataService {
     this.theme.next(theme);
   }
 
-  /*
-  setMobileMode(mobileMode: boolean) {
-    this.mobileMode.next(mobileMode);
-  }
-  */
-
   async getSearchResults(query: string): Promise<any[]> {
     const response = await fetch(
       `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${query}&limit=10`,

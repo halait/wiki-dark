@@ -7,7 +7,6 @@
 #HeaderLogo {
     font-size: 1.6rem;
     font-weight: 700;
-    color: inherit; /* Bug causes .undecorated-link style to not work? */
     flex-shrink: 0;
 }
 #SiteHeaderMenu {

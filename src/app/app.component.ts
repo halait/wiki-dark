@@ -10,7 +10,8 @@ import { DataService } from './data.service';
 export class AppComponent {
   title = 'wiki-dark';
   theme?: string;
-  @ViewChild('SiteThemeToggle') siteThemeToggle?: ElementRef;
+  themeText?: string;
+  themes = ['light', 'dark', 'darker'];
 
   constructor(private dataService: DataService, private meta: Meta) {
     this.meta.addTag({
@@ -19,25 +20,19 @@ export class AppComponent {
     });
   }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.dataService.theme.subscribe((theme) => {
-      this.theme = theme;
-      const toggle = this.siteThemeToggle!.nativeElement;
-      if(theme === 'light') {
-        document.body.classList.add('light');
-        toggle.innerText = 'Dark';
-      } else {
-        document.body.classList.remove('light');
-        toggle.innerText = 'Light';
+      if(this.theme) {
+        document.body.classList.remove(this.theme);
       }
+      document.body.classList.add(theme);
+      this.theme = theme;
+      const nextTheme = this.themes[(this.themes.indexOf(theme) + 1) % 3];
+      this.themeText = nextTheme.charAt(0).toUpperCase() + nextTheme.slice(1);
     });
   }
 
   toggleTheme() {
-    if(this.theme === 'dark') {
-      this.dataService.setTheme('light');
-    } else {
-      this.dataService.setTheme('dark');
-    }
+    this.dataService.setTheme(this.themes[(this.themes.indexOf(this.theme!) + 1) % 3]);
   }
 }

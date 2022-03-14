@@ -43,13 +43,12 @@ export class WikiComponent implements OnInit {
       this.mobileMode = mobileMode;
       this.setWiki();
     });
-  }
-
-  async ngAfterViewInit() {
     this.dataService.theme.subscribe((theme) => {
       this.setTheme(theme);
     });
-  
+  }
+
+  async ngAfterViewInit() {  
     await this.wait();
 
     this.route.paramMap.subscribe((map) => {
@@ -135,7 +134,7 @@ export class WikiComponent implements OnInit {
       });
     }
 
-    this.setTheme(this.theme);
+    this.setTheme(this.theme!);
 
     console.log('break');
 
@@ -161,32 +160,36 @@ export class WikiComponent implements OnInit {
     });
   }
   
-  style!: string;
+  style?: string;
+  desktopStyle?: string;
+  mobileStyle?: string;
+
 
   async proccessIframe() {
     const doc = this.iFrame!.contentDocument!;
-    const css = doc.createElement('style');
-
-    //css.href = this.origin + '/assets/wiki-styles.css';
-    //css.rel = 'stylesheet';
-    //css.type = 'text/css';
-
+    const commonCss = doc.createElement('style');
 
     if(!this.style) {
-      const res = await fetch('/assets/wiki-styles.css');
+      const res = await fetch('/assets/wiki-common.css');
       this.style = await res.text();
     }
-    css.innerHTML = this.style;
+    commonCss.innerHTML = this.style;
+    doc.head.appendChild(commonCss);
 
+    const css = doc.createElement('style');
+    if(this.mobileMode) {
+      if(!this.mobileStyle) {
+        this.mobileStyle = await (await fetch('/assets/wiki-mobile.css')).text();
+      }
+      css.innerHTML = this.mobileStyle;
+    } else {
+      if(!this.desktopStyle) {
+        this.desktopStyle = await (await fetch('/assets/wiki-desktop.css')).text();
+      }
+      css.innerHTML = this.desktopStyle;
+    }
     doc.head.appendChild(css);
 
-
-
-    /*
-    const script = doc.createElement('script');
-    script.src = this.origin + '/assets/wiki-script.js';
-    doc.head.appendChild(script);
-    */
 
     const toc = this.getTableOfContents(doc);
     for(let i = 0, len = toc.length; i != len; ++i) {
@@ -295,28 +298,34 @@ export class WikiComponent implements OnInit {
     }
   }
 
-  setTheme(theme?: string) {
+  setTheme(theme: string) {
+    const oldTheme = this.theme;
     this.theme = theme;
     if(!this.iFrame) {
       return;
     }
     const doc = this.iFrame.contentDocument!;
 
-    doc.body.classList.add('light');
-    this.iFrame!.classList.add('light');
+    if(oldTheme) {
+      doc.body.classList.remove(oldTheme);
+      this.iFrame!.classList.remove(oldTheme);
+    }
+    doc.body.classList.add(theme);
 
     if(this.mobileMode && this.iFrame.contentWindow && (this.iFrame.contentWindow as any).pcs && this.title != 'Main_Page') {
       const win = this.iFrame.contentWindow as any;
-      if(theme === 'dark') {
+      if(theme === 'dark' || theme === 'darker') {
         win.pcs.c1.Page.setTheme('pcs-theme-black');
       } else {
         win.pcs.c1.Page.setTheme('pcs-theme-light');
       }
-    } else {
-      if(theme === 'dark') {
-        doc.body.classList.remove('light');
-        this.iFrame!.classList.remove('light');
+      if(theme === 'darker') {
+        win.pcs.c1.Page.setDimImages(true);
+      } else {
+        win.pcs.c1.Page.setDimImages(false)
       }
+    } else {
+      this.iFrame!.classList.add(theme);
     }
   }
 

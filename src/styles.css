@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-body {
+body.darker {
     --bg-color: #000;
     --color: #999;
     --secondary-color: #777;
@@ -7,20 +7,31 @@ body {
     --anchor-color-visited: #b3d;
     --scrollbar-track-color: #000;
     --scrollbar-thumb-color: #444;
+}
+body.dark {
+    --bg-color: #000;
+    --color: #ddd;
+    --secondary-color: #999;
+    --anchor-color: #aaf;
+    --anchor-color-visited: #f9f;
+    --scrollbar-track-color: #111;
+    --scrollbar-thumb-color: #555;
+}
+body.light {
+    --bg-color: #fff;
+    --color: #222;
+    --secondary-color: #555;
+    --anchor-color: #00b;
+    --anchor-color-visited: #60b;
+    --scrollbar-track-color: #fff;
+    --scrollbar-thumb-color: #bbb;
+}
+body {
     margin: 0;
     background-color: var(--bg-color);
     color: var(--color);
     font-family: sans-serif;
     line-height: 1.75;
-}
-body.light {
-    --bg-color: #fff;
-    --color: #666;
-    --secondary-color: #888;
-    --anchor-color: #33c;
-    --anchor-color-visited: #80a;
-    --scrollbar-track-color: #fff;
-    --scrollbar-thumb-color: #bbb;
 }
 a { 
     color: var(--anchor-color);
@@ -39,6 +50,9 @@ button {
 .undecorated-link {
     color: var(--color);
     text-decoration: none;
+}
+.undecorated-link:visited {
+    color: var(--color);
 }
 .display-none {
     display: none;
@@ -61,24 +75,13 @@ body::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-thumb-color);
 }
 
-
-
-
 #WikiIFrame {
     border: none;
-    filter: invert(1);
-    color: #000;
     background-color: #fff;
 }
-.light#WikiIFrame {
-    filter: none;
+.dark#WikiIFrame, .darker#WikiIFrame{
+    filter: invert(1);
 }
-
-
-
-
-
-
 
 @media screen and (min-width: 60rem) {
     .page-width {
