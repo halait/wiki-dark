@@ -182,6 +182,14 @@ export class WikiComponent implements OnInit {
         this.mobileStyle = await (await fetch('/assets/wiki-mobile.css')).text();
       }
       css.innerHTML = this.mobileStyle;
+      if(this.title === 'Main_Page') {
+        if(!this.desktopStyle) {
+          this.desktopStyle = await (await fetch('/assets/wiki-desktop.css')).text();
+        }
+        const extraCss = doc.createElement('style');
+        extraCss.innerHTML = this.desktopStyle;
+        doc.head.appendChild(extraCss);
+      }
     } else {
       if(!this.desktopStyle) {
         this.desktopStyle = await (await fetch('/assets/wiki-desktop.css')).text();
@@ -312,17 +320,38 @@ export class WikiComponent implements OnInit {
     }
     doc.body.classList.add(theme);
 
-    if(this.mobileMode && this.iFrame.contentWindow && (this.iFrame.contentWindow as any).pcs && this.title != 'Main_Page') {
-      const win = this.iFrame.contentWindow as any;
-      if(theme === 'dark' || theme === 'darker') {
-        win.pcs.c1.Page.setTheme('pcs-theme-black');
+    if(this.mobileMode && this.iFrame.contentWindow && (this.iFrame.contentWindow as any).pcs) {
+      if(this.title != 'Main_Page') {
+        const win = this.iFrame.contentWindow as any;
+        if(theme === 'dark' || theme === 'darker') {
+          win.pcs.c1.Page.setTheme('pcs-theme-black');
+        } else {
+          win.pcs.c1.Page.setTheme('pcs-theme-light');
+        }
+        if(theme === 'darker') {
+          win.pcs.c1.Page.setDimImages(true);
+        } else {
+          win.pcs.c1.Page.setDimImages(false)
+        }
       } else {
-        win.pcs.c1.Page.setTheme('pcs-theme-light');
-      }
-      if(theme === 'darker') {
-        win.pcs.c1.Page.setDimImages(true);
-      } else {
-        win.pcs.c1.Page.setDimImages(false)
+        if(theme === 'dark' || theme === 'darker') {
+          this.iFrame!.classList.add(theme);
+        }
+        /*
+        if(theme === 'dark' || theme === 'darker') {
+          this.iFrame!.classList.add(theme);
+          const media = doc.querySelectorAll('img, video') as any;
+          for(let i = 0, len = media.length; i != len; ++i) {
+            media[i].style!.filter = 'invert(1)';
+          }
+        } else {
+          this.iFrame!.classList.remove(theme);
+          const media = doc.querySelectorAll('img, video') as any;
+          for(let i = 0, len = media.length; i != len; ++i) {
+            media[i].style!.filter = 'none';
+          }
+        }
+        */
       }
     } else {
       this.iFrame!.classList.add(theme);

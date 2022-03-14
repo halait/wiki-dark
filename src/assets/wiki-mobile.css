@@ -38,15 +38,13 @@ body.darker > .pcs-theme-black {
 body {
     overflow: auto;
 }
-
-
-.mw-parser-output #mp-topbanner {
+#mp-topbanner, #mp-lower {
     display: none !important;
 }
-.mw-parser-output #mp-left, .mw-parser-output #mp-right {
+#mp-left, #mp-right {
     display: table-row;
 }
-.mw-parser-output #mp-upper .mid-table {
+.mid-table {
     display: none;
 }
 
