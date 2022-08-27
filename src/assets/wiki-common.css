@@ -3,17 +3,7 @@ body {
 
     /* to allow resizing */
     height: max-content;
-
-    margin-left: auto !important;
-    margin-right: auto !important;
-
-    padding: 0;
 }
-/*
-.mw-parser-output #mp-left {
-    color: inherit !important;
-}
-*/
 
 .wd-control-heading {
     cursor: pointer;

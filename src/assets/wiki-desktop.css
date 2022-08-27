@@ -1,34 +1,35 @@
 body.darker {
-    --filter: invert(1);
+    --filter-invert: 1;
+    --filter-brightness: 0.65;
     --bg-color: #fff;
     --color: #666;
     --link-color: #990;
     --link-visited-color: #4c2;
     --link-external-color: #f75;
-    --image-opacity: 0.65;
 }
 body.dark {
-    --filter: invert(1);
+    --filter-invert: 1;
     --bg-color: #fff;
     --color: #222;
     --link-color: #550;
     --link-visited-color: #060;
     --link-external-color: #c42;
-    --image-opacity: 1;
 }
 body.light {
-    --filter: none;
     --color: #222;
     --link-color: #00b;
     --link-visited-color: #60b;
     --link-external-color: #08a;
-    --image-opacity: 1;
 }
 body {
     color: var(--color);
     background-color: var(--bg-color);
     line-height: 1.75;
     font-family: sans-serif;
+    max-width: 90rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 2rem;
 }
 a {
     color: var(--link-color);
@@ -47,6 +48,5 @@ h1, h2, h3, h4, h5, h6 {
 }
 img, video {
     background-color: #fff;
-    filter: var(--filter);
-    opacity: var(--image-opacity);
+    filter: brightness(var(--filter-brightness, 1)) invert(var(--filter-invert, 0));
 }

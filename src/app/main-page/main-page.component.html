@@ -1,30 +1,31 @@
-<h1>About Wiki Dark</h1>
-Wiki Dark is made by <a href="https://github.com/halait" target="_blank" rel="noreferrer noopener">halait</a> with 
-<a href='https://www.mediawiki.org/wiki/RESTBase' target="_blank" rel="noreferrer noopener">Wikimedia REST API</a>, 
-<a href='https://www.mediawiki.org/wiki/API:REST_API' target="_blank" rel="noreferrer noopener">Mediawiki Core REST API</a> and 
-<a href='https://angular.io/' target="_blank" rel="noreferrer noopener">Angular</a>. 
-Visit the <a href='https://github.com/halait/wiki-dark' target="_blank" rel="noreferrer noopener">GitHub repository</a> for more information.
-<main>
-    <div id="featured" *ngIf="featured.tfa">
-        <h1>Featured Article</h1>
-        <app-wiki-preview [preview]="featured.tfa"></app-wiki-preview>
-    </div>
-    <div *ngIf="featured.mostread" id="most-read">
-        <h1>Most Read</h1>
-        <ol class="unstyled-list">
-            <li *ngFor="let preview of featured.mostread.articles.slice(0, 3)">
-                <app-wiki-preview [preview]="preview"></app-wiki-preview>
+<div class="page-width">
+    <h1>About Wiki Dark</h1>
+    Wiki Dark is made by <a href="https://github.com/halait" target="_blank" rel="noreferrer noopener">halait</a> with 
+    <a href='https://www.mediawiki.org/wiki/RESTBase' target="_blank" rel="noreferrer noopener">Wikimedia REST API</a>, 
+    <a href='https://www.mediawiki.org/wiki/API:REST_API' target="_blank" rel="noreferrer noopener">Mediawiki Core REST API</a> and 
+    <a href='https://angular.io/' target="_blank" rel="noreferrer noopener">Angular</a>. 
+    Visit the <a href='https://github.com/halait/wiki-dark' target="_blank" rel="noreferrer noopener">GitHub repository</a> for more information.
+    <main>
+        <div id="featured" *ngIf="featured.tfa">
+            <h1>Featured Article</h1>
+            <app-wiki-preview [preview]="featured.tfa"></app-wiki-preview>
+        </div>
+        <div *ngIf="featured.mostread" id="most-read">
+            <h1>Most Read</h1>
+            <ol class="unstyled-list">
+                <li *ngFor="let preview of featured.mostread.articles.slice(0, 3)">
+                    <app-wiki-preview [preview]="preview"></app-wiki-preview>
 
-            </li>
-        </ol>
-    </div>
-    <div id="news">
-        <h1>News</h1>
-        <ol class="unstyled-list">
-            <li *ngFor="let news of featured.news">
-                <app-wiki-preview [preview]="news.links[0]"></app-wiki-preview>
-            </li>
-        </ol>
-    </div>
-</main>
-
+                </li>
+            </ol>
+        </div>
+        <div id="news">
+            <h1>News</h1>
+            <ol class="unstyled-list">
+                <li *ngFor="let news of featured.news">
+                    <app-wiki-preview [preview]="news.links[0]"></app-wiki-preview>
+                </li>
+            </ol>
+        </div>
+    </main>
+</div>

@@ -194,7 +194,7 @@ export class WikiComponent implements OnInit {
   
   wait() {
     return new Promise(function(resolve) {
-      setTimeout(() => {resolve(null)}, 500);
+      setTimeout(() => {resolve(null)}, 0);
     });
   }
   

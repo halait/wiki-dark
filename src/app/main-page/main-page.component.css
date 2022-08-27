@@ -12,7 +12,7 @@ app-wiki-preview {
     }
     main {
         display: grid;
-        column-gap: 3rem;
+        column-gap: 5rem;
         grid-template-areas: 
             "featured most-read"
             "news     most-read";

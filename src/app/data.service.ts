@@ -8,7 +8,7 @@ import { Wiki } from './wiki';
 export class DataService {
 
   public theme = new BehaviorSubject<string>(localStorage.getItem('theme') || 'dark');
-  private mobileModeQueryList = window.matchMedia('(max-width: 60rem)');
+  private mobileModeQueryList = window.matchMedia('(max-width: 70rem)');
   public mobileMode = new BehaviorSubject<boolean>(this.mobileModeQueryList.matches);
   private wikiCache = new Map();
 

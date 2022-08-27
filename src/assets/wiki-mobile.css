@@ -1,4 +1,3 @@
-/* Mobile only override */
 .pcs-theme-black {
     --paper-background: #000;
     --primary-text-color: #ddd;
@@ -37,21 +36,5 @@ body.darker > .pcs-theme-black {
 }
 body {
     overflow: auto;
-    max-width: 100% !important;
+    max-width: calc(100% - 2rem) !important;
 }
-/*
-.mid-table {
-    display: none;
-}
-@media screen and (min-width: 60rem) {
-    .mw-parser-output #mp-topbanner {
-        display: block !important;
-    }
-    .mw-parser-output #mp-left, .mw-parser-output #mp-right {
-        display: table-cell;
-    }
-    .mw-parser-output #mp-upper .mid-table {
-        display: block;
-    }
-}
-*/
