@@ -7,5 +7,5 @@ Wiki Dark is single-page application that serves Wikipedia articles using <a hre
 - Responsive pages using seperate endpoint (mobile optimized wikis)
 - Link redirection to show all wikis within the application
 - Custom featured content page
-- - Collapsible sections
+- Collapsible sections
 - Search text within collapsed sections (Chrome only)
