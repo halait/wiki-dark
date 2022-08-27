@@ -1,8 +1,10 @@
 <header id='SiteHeader'>
-    <a [routerLink]='["/wiki/Main_Page"]' id='HeaderLogo' class='undecorated-link'>Wiki Dark</a>
+    <a [routerLink]='[""]' id='HeaderLogo' class='undecorated-link'>Wiki Dark</a>
     <div id='SiteHeaderMenu'>
         <app-quick-search></app-quick-search>
         <button id='SiteThemeToggle' (click)='this.toggleTheme()'>{{ themeText }}</button>
     </div>
 </header>
-<router-outlet></router-outlet>
+<main class="page-width">
+    <router-outlet></router-outlet>
+</main>

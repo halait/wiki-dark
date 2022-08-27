@@ -1,0 +1,11 @@
+<div *ngIf="preview !== undefined">
+    <a class="title-a" routerLink="/wiki/{{ preview.titles.canonical }}">
+        <h2 class="title">{{ preview.titles.normalized }}</h2>
+    </a>
+    <div class="description">{{ preview.description }}</div>
+    <img *ngIf="preview.thumbnail" id='tfa-thumbnail' src="{{ preview.thumbnail.source}}" width="{{ preview.thumbnail.width }}" height="{{ preview.thumbnail.height }}">
+    <div>
+        {{ preview.extract }}
+    </div>
+    <a routerLink="/wiki/{{ preview.titles.canonical }}">Read full article</a>
+</div>

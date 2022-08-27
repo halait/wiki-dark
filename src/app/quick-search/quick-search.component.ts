@@ -21,11 +21,12 @@ export class QuickSearchComponent implements OnInit {
   }
 
   async onSubmit() {
+    document.getElementById('SearchInput')!.blur();
     const query = this.searchForm.value.query.trim();
     //TODO prompt validation
     if(!query) return;
     try {
-      await this.dataService.getWiki(query);
+      await this.dataService.getWiki(query, false);
       this.router.navigate(['/wiki/' + query]);
     } catch(e) {
       console.log('No wiki page for search, redirecting to regular search');

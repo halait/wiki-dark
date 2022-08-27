@@ -8,6 +8,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { WikiComponent } from './wiki/wiki.component';
 import { QuickSearchComponent } from './quick-search/quick-search.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
+import { MainPageComponent } from './main-page/main-page.component';
+import { WikiPreviewComponent } from './wiki-preview/wiki-preview.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { SearchResultsComponent } from './search-results/search-results.componen
     SearchComponent,
     WikiComponent,
     QuickSearchComponent,
-    SearchResultsComponent
+    SearchResultsComponent,
+    MainPageComponent,
+    WikiPreviewComponent
   ],
   imports: [
     BrowserModule,

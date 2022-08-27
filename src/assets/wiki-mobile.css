@@ -21,7 +21,7 @@ body.darker > .pcs-theme-black {
     --paper-background: #000;
     --primary-text-color: #999;
     --secondary-text-color: #777;
-    --link-color: #33c;
+    --link-color: #66f;
     --border-color: #43464a;
     --footer-title-text-color: #f8f9fa;
     --android-active-edit-link-background: #101418;
@@ -37,22 +37,13 @@ body.darker > .pcs-theme-black {
 }
 body {
     overflow: auto;
+    max-width: 100% !important;
 }
-#mp-topbanner, #mp-lower {
-    display: none !important;
-}
-#mp-left, #mp-right {
-    display: table-row;
-}
+/*
 .mid-table {
     display: none;
 }
-
 @media screen and (min-width: 60rem) {
-    body {
-        padding: 0 2rem;
-    }
-
     .mw-parser-output #mp-topbanner {
         display: block !important;
     }
@@ -63,3 +54,4 @@ body {
         display: block;
     }
 }
+*/

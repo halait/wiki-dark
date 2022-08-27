@@ -1,7 +1,4 @@
 body {
-
-    max-width: 90rem;
-    padding: 0 1rem;
     position: relative;
 
     /* to allow resizing */
@@ -9,11 +6,15 @@ body {
 
     margin-left: auto !important;
     margin-right: auto !important;
-}
 
+    padding: 0;
+}
+/*
 .mw-parser-output #mp-left {
     color: inherit !important;
 }
+*/
+
 .wd-control-heading {
     cursor: pointer;
     display: flex;
@@ -24,6 +25,6 @@ body {
     font-weight: 700;
     content: '-';
 }
-.wd-control-heading-hidden:before {
+.wd-control-section-hidden > .wd-control-heading:before {
     content: '+';
 }

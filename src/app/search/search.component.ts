@@ -20,18 +20,11 @@ export class SearchComponent implements OnInit {
   results: any[] = [];
   message?: string;
   constructor(
-    //private formBuilder: FormBuilder,
     private dataService : DataService,
-    private route: ActivatedRoute,
-    /*private router: Router*/) { }
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.results = this.route.snapshot.data.results;
-    /*
-    this.route.queryParamMap.subscribe((map) => {
-      //this.search(map.get('q'));
-    });
-    */
   }
   
   async search(query: string | null) {
@@ -44,17 +37,4 @@ export class SearchComponent implements OnInit {
       this.message = 'Your search - ' + query + ' - did not match... anything...';
     }
   }
-
-  /*
-  async resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Promise<any> {
-    const query = route.queryParamMap.get('q');
-    if(!query) {
-      return;
-    }
-    this.results = await this.dataService.getSearchResults(query);
-  }
-  */
 }

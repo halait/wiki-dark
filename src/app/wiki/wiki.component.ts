@@ -93,7 +93,6 @@ export class WikiComponent implements OnInit {
     this.iFrame.id = 'WikiIFrame';
     this.container.nativeElement.appendChild(this.iFrame);
     const doc = this.iFrame.contentDocument as Document;
-
     
     try {
       await this.writeWiki(doc, wiki.html);
@@ -102,7 +101,6 @@ export class WikiComponent implements OnInit {
       console.error(e);
       return;
     }
-    //this.resizeIFrame(0);
 
     try {
       const decodedURL = decodeURIComponent(this.title);
@@ -115,10 +113,38 @@ export class WikiComponent implements OnInit {
       console.error('Unable to decode URL');
     }
 
-    if(!wiki.isProcessed) await this.proccessIframe();
+    if(!wiki.isProcessed) {
+      await this.proccessIframe();
+    }
 
     this.changeToInternalLinks();
 
+    const sections = doc.querySelectorAll('.wd-control-section');
+    const revealer = function(e: any) {
+      const section = e.currentTarget.parentElement as HTMLElement;
+      const content = section.querySelector('.wd-control-content');
+      if(!content) {
+        return;
+      }
+      const hide = section.classList.toggle('wd-control-section-hidden');
+      if(hide) {
+        content.setAttribute('hidden', 'until-found');
+      } else {
+        content.removeAttribute('hidden');
+      }
+    };
+    for(let i = 0, len = sections.length; i != len; ++i) {
+      const section = sections[i];
+      const heading = section.querySelector('.wd-control-heading');
+      const content = section.querySelector('.wd-control-content');
+      if(!heading || !content) {
+        continue;
+      }
+      heading.addEventListener('click', revealer);
+      content.addEventListener('beforematch', revealer);
+    }
+    
+    /*
     const headings = doc.querySelectorAll('.wd-control-heading');
     for(let i = 0, len = headings.length; i != len; ++i) {
       const heading = headings[i];
@@ -127,16 +153,21 @@ export class WikiComponent implements OnInit {
         const hide = heading.classList.toggle('wd-control-heading-hidden');
         const div = heading.parentElement!.querySelector('#' + heading.dataset.divId!) as HTMLElement;
         if(hide) {
-          div.style.display = 'none';
+          div.setAttribute('hidden', 'until-found');
         } else {
-          div.style.display = 'block';
+          div.removeAttribute('hidden');
         }
       });
     }
+    */
 
     this.setTheme(this.theme!);
 
-    console.log('break');
+    if(this.mobileMode) {
+      const win = this.iFrame.contentWindow as any;
+      win.pcs.c1.Page.expandOrCollapseTables(true);
+      win.pcs.c1.Page.setEditButtons(false, false);
+    }
 
     this.iFrame.style.opacity = '1';
 
@@ -146,17 +177,24 @@ export class WikiComponent implements OnInit {
     this.container.nativeElement.style.minHeight = 0 + 'px';
 
     // TODO fix mobile scrolling
+    window.scrollTo(0, wiki.scrollPosition);
+    /*
     if(this.mobileMode) {
       window.scrollTo(0, 0);
     } else {
       window.scrollTo(0, wiki.scrollPosition);
     }
+    */
+    //await this.wait();
   }
 
+  revealSection(section: HTMLElement) {
+
+  }
   
   wait() {
     return new Promise(function(resolve) {
-      setTimeout(() => {resolve(null)}, 0);
+      setTimeout(() => {resolve(null)}, 500);
     });
   }
   
@@ -177,19 +215,12 @@ export class WikiComponent implements OnInit {
     doc.head.appendChild(commonCss);
 
     const css = doc.createElement('style');
+    // Make loader class
     if(this.mobileMode) {
       if(!this.mobileStyle) {
         this.mobileStyle = await (await fetch('/assets/wiki-mobile.css')).text();
       }
       css.innerHTML = this.mobileStyle;
-      if(this.title === 'Main_Page') {
-        if(!this.desktopStyle) {
-          this.desktopStyle = await (await fetch('/assets/wiki-desktop.css')).text();
-        }
-        const extraCss = doc.createElement('style');
-        extraCss.innerHTML = this.desktopStyle;
-        doc.head.appendChild(extraCss);
-      }
     } else {
       if(!this.desktopStyle) {
         this.desktopStyle = await (await fetch('/assets/wiki-desktop.css')).text();
@@ -224,11 +255,15 @@ export class WikiComponent implements OnInit {
       }
       section.innerHTML = '';
       div.id = 'wd-' + toc[i].id;
-      div.style.display = 'none';
+
+      div.className = 'wd-control-content';
+      div.setAttribute('hidden', 'until-found');
+
       section.appendChild(heading);
       section.appendChild(div);
+      section.classList.add('wd-control-section');
+      section.classList.add('wd-control-section-hidden');
       heading.classList.add('wd-control-heading');
-      heading.classList.add('wd-control-heading-hidden');
       heading.dataset.divId = div.id;
     }
   }
@@ -321,38 +356,18 @@ export class WikiComponent implements OnInit {
     doc.body.classList.add(theme);
 
     if(this.mobileMode && this.iFrame.contentWindow && (this.iFrame.contentWindow as any).pcs) {
-      if(this.title != 'Main_Page') {
-        const win = this.iFrame.contentWindow as any;
-        if(theme === 'dark' || theme === 'darker') {
-          win.pcs.c1.Page.setTheme('pcs-theme-black');
-        } else {
-          win.pcs.c1.Page.setTheme('pcs-theme-light');
-        }
-        if(theme === 'darker') {
-          win.pcs.c1.Page.setDimImages(true);
-        } else {
-          win.pcs.c1.Page.setDimImages(false)
-        }
+      const win = this.iFrame.contentWindow as any;
+      if(theme === 'dark' || theme === 'darker') {
+        win.pcs.c1.Page.setTheme('pcs-theme-black');
       } else {
-        if(theme === 'dark' || theme === 'darker') {
-          this.iFrame!.classList.add(theme);
-        }
-        /*
-        if(theme === 'dark' || theme === 'darker') {
-          this.iFrame!.classList.add(theme);
-          const media = doc.querySelectorAll('img, video') as any;
-          for(let i = 0, len = media.length; i != len; ++i) {
-            media[i].style!.filter = 'invert(1)';
-          }
-        } else {
-          this.iFrame!.classList.remove(theme);
-          const media = doc.querySelectorAll('img, video') as any;
-          for(let i = 0, len = media.length; i != len; ++i) {
-            media[i].style!.filter = 'none';
-          }
-        }
-        */
+        win.pcs.c1.Page.setTheme('pcs-theme-light');
       }
+      if(theme === 'darker') {
+        win.pcs.c1.Page.setDimImages(true);
+      } else {
+        win.pcs.c1.Page.setDimImages(false)
+      }
+
     } else {
       this.iFrame!.classList.add(theme);
     }

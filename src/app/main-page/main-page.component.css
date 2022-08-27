@@ -1,0 +1,29 @@
+app-wiki-preview {
+    margin-bottom: 3rem;
+    display: block;
+}
+.unstyled-list {
+    padding: 0;
+    list-style: none;
+}
+@media screen and (min-width: 60rem) {
+    .page-width {
+        padding: 0 2rem;
+    }
+    main {
+        display: grid;
+        column-gap: 3rem;
+        grid-template-areas: 
+            "featured most-read"
+            "news     most-read";
+    }
+    #featured {
+        grid-area: featured;
+    }
+    #most-read {
+        grid-area: most-read;
+    }
+    #news {
+        grid-area: news;
+    }
+}

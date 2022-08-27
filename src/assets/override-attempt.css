@@ -75,18 +75,3 @@ td,
     background-color: inherit !important;
 }
 */
-/*
-body {
-    --filter: invert(1);
-    background-color: #fff;
-    color: #000;
-    filter: var(--filter);
-    margin: 0;
-}
-img {
-    filter: var(--filter);
-}
-body.light {
-    --filter: none;
-}
-*/
